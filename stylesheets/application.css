@@ -852,6 +852,80 @@ p.pagination {
   height: auto;
 }
 
+/* ---- Icon image/SVG size constraints ----
+   Redmine uses SVG icons via <img> and inline <svg> in admin cards,
+   flash messages, sidebar, and icon-class elements. Without explicit
+   constraints, #content img { max-width:100% } blows them up. */
+
+/* Admin index page — icon cards (Projects, Users, Groups, Roles, etc.) */
+.admin-menu img,
+.admin-menu svg {
+  width: 20px;
+  height: 20px;
+  max-width: 20px;
+  max-height: 20px;
+}
+
+/* Flash message icons */
+#flash_notice img,
+#flash_notice svg,
+#flash_error img,
+#flash_error svg,
+#flash_warning img,
+#flash_warning svg,
+.flash img,
+.flash svg {
+  width: 16px;
+  height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+  flex-shrink: 0;
+}
+
+/* General: constrain img/svg inside icon-class elements */
+[class*="icon"] > img,
+[class*="icon"] > svg,
+a.icon img,
+a.icon svg {
+  width: 16px;
+  height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+}
+
+/* Sidebar icon images */
+#sidebar img,
+#sidebar svg {
+  max-width: 20px;
+  max-height: 20px;
+}
+
+/* Fieldset legend toggle icons (Filters, Options collapsible sections) */
+fieldset legend img,
+fieldset legend svg {
+  width: 12px;
+  height: 12px;
+  max-width: 12px;
+  max-height: 12px;
+  vertical-align: middle;
+}
+
+/* Contextual action bar icons */
+.contextual img,
+.contextual svg {
+  width: 16px;
+  height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+}
+
+/* Project list icons */
+ul.projects img,
+ul.projects svg {
+  max-width: 20px;
+  max-height: 20px;
+}
+
 /* Remove Redmine's default header background that uses images */
 #header,
 #top-menu,
