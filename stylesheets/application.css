@@ -1,0 +1,9066 @@
+/* ==========================================================================
+   WS Redmine Theme — Part 1: Layout & Structure
+   Linear.app-inspired design — Light Mode
+   ========================================================================== */
+
+/* ========== FONT IMPORT ========== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ========== CSS RESET ========== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ========== CSS CUSTOM PROPERTIES (Light Mode) ========== */
+:root {
+  /* Background colors */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F9F9FB;
+  --bg-tertiary: #F3F3F6;
+  --bg-accent: #5E6AD2;
+  --bg-accent-hover: #4E5BBD;
+  --bg-accent-subtle: #EEF0FF;
+
+  /* Text colors */
+  --text-primary: #1B1B1F;
+  --text-secondary: #6B6F76;
+  --text-tertiary: #9CA0A8;
+  --text-on-accent: #FFFFFF;
+
+  /* Borders */
+  --border-primary: #E8E8EC;
+  --border-secondary: #F0F0F3;
+  --border-focus: #5E6AD2;
+
+  /* Status colors */
+  --status-green: #4CAF50;
+  --status-yellow: #F59E0B;
+  --status-red: #EF4444;
+  --status-blue: #3B82F6;
+  --status-orange: #F97316;
+
+  /* Priority colors */
+  --priority-urgent: #EF4444;
+  --priority-high: #F97316;
+  --priority-normal: #6B6F76;
+  --priority-low: #9CA0A8;
+
+  /* Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+
+  /* Font sizes */
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 13px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+
+  /* Font weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  /* Line heights */
+  --line-height-tight: 1.3;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.7;
+
+  /* Letter spacing */
+  --letter-spacing: -0.01em;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* ========== BASE / GLOBAL STYLES ========== */
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: var(--bg-accent);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+a:hover {
+  color: var(--bg-accent-hover);
+  text-decoration: underline;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background-color: var(--bg-accent);
+  color: var(--text-on-accent);
+}
+
+::-moz-selection {
+  background-color: var(--bg-accent);
+  color: var(--text-on-accent);
+}
+
+/* Override Redmine's default font on common elements */
+body#content,
+#wrapper,
+#wrapper * {
+  font-family: var(--font-family);
+}
+
+/* Reset Redmine's default heading margin/padding that leaks through */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family);
+  letter-spacing: var(--letter-spacing);
+  line-height: var(--line-height-tight);
+}
+
+
+/* ========== LAYOUT — #wrapper, #main, #content ========== */
+
+#wrapper {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  background: var(--bg-primary);
+  min-height: 100vh;
+}
+
+/* Main content area — flex row for content + sidebar */
+#main {
+  display: flex;
+  flex-direction: row;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-6) var(--space-8);
+  gap: 0;
+  min-height: calc(100vh - 180px);
+}
+
+/* When sidebar is not present, main should still be centered */
+#main.nosidebar {
+  max-width: 1400px;
+}
+
+#main.nosidebar #content {
+  max-width: 100%;
+}
+
+#content {
+  flex: 1;
+  min-width: 0;
+  padding: 0 var(--space-6) 0 0;
+}
+
+/* When there is no sidebar, remove right padding */
+#main.nosidebar #content,
+body.nosidebar #content {
+  padding-right: 0;
+}
+
+/* Remove Redmine's default content padding that may exist */
+div#content {
+  padding: 0 var(--space-6) 0 0;
+}
+
+/* Ensure content headings have proper spacing */
+#content h2 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  letter-spacing: var(--letter-spacing);
+  margin: 0 0 var(--space-5) 0;
+  padding: 0;
+  border-bottom: none;
+  line-height: var(--line-height-tight);
+}
+
+#content h3 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  letter-spacing: var(--letter-spacing);
+  margin: var(--space-6) 0 var(--space-3) 0;
+  line-height: var(--line-height-tight);
+}
+
+#content h4 {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: var(--space-5) 0 var(--space-2) 0;
+}
+
+/* Contextual action links (top-right of content sections) */
+#content .contextual {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+#content .contextual a {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: all 0.15s ease;
+}
+
+#content .contextual a:hover {
+  color: var(--bg-accent);
+  text-decoration: none;
+}
+
+
+/* ========== HEADER — #header ========== */
+
+#header {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-primary);
+  padding: 0 var(--space-6);
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  position: relative;
+  /* Remove Redmine default gradients and heavy backgrounds */
+  background-image: none;
+  box-shadow: none;
+}
+
+/* Project name in header */
+#header h1 {
+  font-size: 15px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  line-height: 52px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#header h1 a {
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+#header h1 a:hover {
+  color: var(--bg-accent);
+  text-decoration: none;
+}
+
+/* Header quick search */
+#header #quick-search {
+  float: right;
+  margin: 0;
+  padding: 0;
+}
+
+#header #quick-search #q {
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  width: 200px;
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+#header #quick-search #q::placeholder {
+  color: var(--text-tertiary);
+}
+
+#header #quick-search #q:focus {
+  border-color: var(--border-focus);
+  background: var(--bg-primary);
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.12);
+  width: 260px;
+}
+
+/* Remove Redmine default header image/logo background */
+#header a.home {
+  background-image: none;
+}
+
+
+/* ========== TOP MENU — #top-menu ========== */
+
+#top-menu {
+  background: var(--bg-secondary);
+  font-size: var(--font-size-sm);
+  padding: 0 var(--space-6);
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-secondary);
+  /* Remove Redmine default styles */
+  background-image: none;
+  color: var(--text-secondary);
+}
+
+#top-menu a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+}
+
+#top-menu a:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  text-decoration: none;
+}
+
+#top-menu a.home {
+  font-weight: var(--font-weight-medium);
+}
+
+/* Top menu list styling */
+#top-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+#top-menu ul li {
+  display: flex;
+  align-items: center;
+}
+
+/* Separator between items */
+#top-menu ul li::before {
+  display: none;
+}
+
+/* Account navigation — right side of top menu */
+#account-nav {
+  float: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-left: auto;
+}
+
+#top-menu #account-nav {
+  float: none;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+#top-menu #account-nav li {
+  display: flex;
+  align-items: center;
+}
+
+#top-menu #account-nav a {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  transition: all 0.15s ease;
+}
+
+#top-menu #account-nav a:hover {
+  color: var(--text-primary);
+}
+
+/* Logged in as text */
+#top-menu #account-nav .login,
+#top-menu #account-nav a.login {
+  color: var(--text-secondary);
+}
+
+/* Gravatar in top menu */
+#top-menu img.gravatar {
+  border-radius: 50%;
+  margin-right: var(--space-1);
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+}
+
+
+/* ========== MAIN MENU — #main-menu ========== */
+
+#main-menu {
+  background: transparent;
+  background-image: none;
+  border: none;
+  border-bottom: 1px solid var(--border-primary);
+  padding: 0;
+  margin: 0;
+  min-height: 42px;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+}
+
+#main-menu ul {
+  list-style: none;
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-1);
+  padding: 0 var(--space-6);
+  margin: 0;
+  width: 100%;
+}
+
+#main-menu ul li {
+  display: flex;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+#main-menu ul li a {
+  display: flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  /* Remove Redmine default menu styles */
+  background: transparent;
+  background-image: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+#main-menu ul li a:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  text-decoration: none;
+  border-bottom-color: transparent;
+}
+
+/* Active / selected menu item */
+#main-menu ul li a.selected,
+#main-menu ul li a.current {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+  border-bottom: 2px solid var(--bg-accent);
+  background: transparent;
+  background-image: none;
+}
+
+#main-menu ul li a.selected:hover,
+#main-menu ul li a.current:hover {
+  background: var(--bg-tertiary);
+  border-bottom-color: var(--bg-accent);
+}
+
+/* Remove Redmine's default new-object link styling */
+#main-menu ul li a.new-object {
+  color: var(--bg-accent);
+  font-weight: var(--font-weight-medium);
+}
+
+#main-menu ul li a.new-object:hover {
+  color: var(--bg-accent-hover);
+  background: var(--bg-accent-subtle);
+}
+
+/* Accessibility: visible focus ring */
+#main-menu ul li a:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: -2px;
+  border-radius: var(--radius-md);
+}
+
+/* Remove Redmine's default active item background image/color */
+#main-menu ul li a {
+  background-color: transparent;
+  background-image: none;
+}
+
+
+/* ========== PROJECT MENU — #project-menu ========== */
+
+/* The project menu shows as a tab bar within project context */
+#project-menu {
+  background: transparent;
+  background-image: none;
+  border: none;
+  border-bottom: 1px solid var(--border-secondary);
+  padding: 0;
+  margin: 0;
+}
+
+#project-menu ul {
+  list-style: none;
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-1);
+  padding: 0 var(--space-6);
+  margin: 0;
+}
+
+#project-menu ul li {
+  display: flex;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+}
+
+#project-menu ul li a {
+  display: flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  background: transparent;
+  background-image: none;
+}
+
+#project-menu ul li a:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  text-decoration: none;
+}
+
+#project-menu ul li a.selected,
+#project-menu ul li a.current {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+  border-bottom-color: var(--bg-accent);
+  background: transparent;
+}
+
+#project-menu ul li a.selected:hover,
+#project-menu ul li a.current:hover {
+  background: var(--bg-tertiary);
+  border-bottom-color: var(--bg-accent);
+}
+
+#project-menu ul li a:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: -2px;
+}
+
+
+/* ========== SIDEBAR — #sidebar ========== */
+
+#sidebar {
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border-primary);
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  padding: var(--space-5);
+  flex-shrink: 0;
+  border-radius: 0;
+  overflow-y: auto;
+}
+
+/* Sidebar headings — Linear uses uppercase, small, spaced labels */
+#sidebar h3 {
+  text-transform: uppercase;
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--space-2) 0;
+  padding: 0 0 var(--space-1) 0;
+  border-bottom: none;
+  line-height: var(--line-height-tight);
+}
+
+/* Sidebar section spacing */
+#sidebar h3:not(:first-child) {
+  margin-top: var(--space-5);
+}
+
+/* Sidebar links */
+#sidebar a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  display: block;
+  padding: var(--space-1) 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  transition: all 0.15s ease;
+  line-height: var(--line-height-normal);
+}
+
+#sidebar a:hover {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+#sidebar a:active {
+  color: var(--bg-accent);
+}
+
+/* Sidebar active/selected link */
+#sidebar a.selected {
+  color: var(--bg-accent);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Sidebar lists */
+#sidebar ul {
+  list-style: none;
+  margin: 0 0 var(--space-4) 0;
+  padding: 0;
+}
+
+#sidebar ul li {
+  margin: 0;
+  padding: 0;
+}
+
+#sidebar ul li a {
+  display: block;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  transition: all 0.15s ease;
+}
+
+#sidebar ul li a:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Sidebar form elements */
+#sidebar select {
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  width: 100%;
+  transition: all 0.15s ease;
+}
+
+#sidebar select:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.12);
+  outline: none;
+}
+
+#sidebar input[type="text"],
+#sidebar input[type="search"] {
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  width: 100%;
+  transition: all 0.15s ease;
+}
+
+#sidebar input[type="text"]:focus,
+#sidebar input[type="search"]:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.12);
+  outline: none;
+}
+
+/* Sidebar labels */
+#sidebar label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
+/* Sidebar small text / counts */
+#sidebar span.count {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+  margin-left: var(--space-1);
+}
+
+/* Sidebar "apply" or action links */
+#sidebar a.icon,
+#sidebar a.icon-only {
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+}
+
+#sidebar a.icon:hover,
+#sidebar a.icon-only:hover {
+  color: var(--bg-accent);
+}
+
+/* Query list in sidebar */
+#sidebar #sidebar-queries ul li a {
+  padding: var(--space-1) var(--space-2);
+}
+
+/* Sidebar toggler (if present in some Redmine versions) */
+#sidebar .toggle-sidebar {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  transition: all 0.15s ease;
+}
+
+#sidebar .toggle-sidebar:hover {
+  color: var(--text-secondary);
+}
+
+
+/* ========== FOOTER — #footer ========== */
+
+#footer {
+  background: transparent;
+  border-top: 1px solid var(--border-primary);
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  padding: var(--space-4) var(--space-6);
+  text-align: center;
+  line-height: var(--line-height-normal);
+  margin-top: 0;
+  /* Remove Redmine default footer styling */
+  background-image: none;
+}
+
+#footer a {
+  color: var(--text-tertiary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+#footer a:hover {
+  color: var(--text-secondary);
+  text-decoration: underline;
+}
+
+/* Powered by text */
+#footer .bgl {
+  margin-top: var(--space-1);
+}
+
+#footer .bgr {
+  margin-top: var(--space-1);
+}
+
+
+/* ========== ADDITIONAL LAYOUT UTILITIES ========== */
+
+/* Breadcrumb / path navigation */
+#content p.breadcrumb {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-4);
+  padding: 0;
+}
+
+#content p.breadcrumb a {
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+}
+
+#content p.breadcrumb a:hover {
+  color: var(--bg-accent);
+}
+
+#content p.breadcrumb .separator {
+  color: var(--text-tertiary);
+  margin: 0 var(--space-1);
+}
+
+/* Pagination area — keep clean spacing */
+p.pagination {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: var(--space-4) 0;
+}
+
+/* Split content layout (used in some Redmine views) */
+.splitcontentleft {
+  padding-right: var(--space-4);
+}
+
+.splitcontentright {
+  padding-left: var(--space-4);
+}
+
+/* Ensure images are responsive within content */
+#content img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Remove Redmine's default header background that uses images */
+#header,
+#top-menu,
+#main-menu,
+#footer {
+  background-image: none;
+}
+
+/* Override Redmine's default wrapper width */
+body #wrapper {
+  max-width: none;
+  width: 100%;
+}
+
+/* Make sure the main flex layout works with Redmine's HTML */
+body #main {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+/* Handle the case where sidebar is hidden */
+body.nosidebar #main,
+#main.nosidebar {
+  display: block;
+}
+
+body.nosidebar #sidebar,
+#main.nosidebar #sidebar {
+  display: none;
+}
+/* ============================================================================
+   PART 2: Issues, Forms, Buttons, Tables, Pagination, Activity, Progress
+   WS Redmine Theme — Linear.app-Inspired
+
+   Dependencies: Part 1 must be loaded first (provides :root variables)
+   This file: LIGHT MODE ONLY — dark mode overrides are in Part 4
+   ============================================================================ */
+
+
+/* ============================================================================
+   1. ISSUES LIST — table.issues, table.list
+   The most important view in Redmine. Linear-style clean table.
+   ============================================================================ */
+
+/* --- Auto-scroll container for wide tables --- */
+.autoscroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* --- Base table styles --- */
+table.issues,
+table.list {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent;
+  border: none;
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+}
+
+/* --- Remove default Redmine borders and backgrounds --- */
+table.issues,
+table.issues tr,
+table.issues td,
+table.issues th,
+table.list,
+table.list tr,
+table.list td,
+table.list th {
+  border-left: none;
+  border-right: none;
+}
+
+/* --- Table header --- */
+table.issues thead th,
+table.list thead th {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  padding: 8px 12px;
+  border-top: none;
+  border-bottom: 2px solid var(--border-primary);
+  background: transparent;
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: middle;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* Sort link in headers */
+table.issues thead th a,
+table.list thead th a {
+  color: var(--text-tertiary);
+  text-decoration: none;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+table.issues thead th a:hover,
+table.list thead th a:hover {
+  color: var(--text-secondary);
+}
+
+/* Sort arrow indicators */
+table.issues thead th.sort.asc a::after,
+table.list thead th.sort.asc a::after {
+  content: " \25B2";
+  font-size: 9px;
+  color: var(--text-tertiary);
+}
+
+table.issues thead th.sort.desc a::after,
+table.list thead th.sort.desc a::after {
+  content: " \25BC";
+  font-size: 9px;
+  color: var(--text-tertiary);
+}
+
+/* --- Table body rows --- */
+table.issues tbody tr,
+table.list tbody tr {
+  border-bottom: 1px solid var(--border-secondary);
+  transition: background-color 0.1s ease;
+}
+
+table.issues tbody td,
+table.list tbody td {
+  padding: 10px 12px;
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border-secondary);
+  border-top: none;
+  line-height: var(--line-height-normal);
+  background: transparent;
+}
+
+/* --- Row hover --- */
+table.issues tbody tr.issue:hover,
+table.issues tbody tr:hover,
+table.list tbody tr:hover {
+  background: var(--bg-tertiary);
+}
+
+/* --- Even/odd row alternating (very subtle or transparent) --- */
+table.issues tbody tr.even,
+table.list tbody tr.even {
+  background: transparent;
+}
+
+table.issues tbody tr.odd,
+table.list tbody tr.odd {
+  background: transparent;
+}
+
+/* Optionally add very subtle alternating for large lists */
+table.issues tbody tr.even:not(:hover),
+table.list tbody tr.even:not(:hover) {
+  background: var(--bg-secondary);
+}
+
+/* --- Checkbox column --- */
+table.issues td.checkbox,
+table.list td.checkbox {
+  width: 32px;
+  padding-left: 12px;
+  padding-right: 4px;
+  text-align: center;
+}
+
+table.issues td.checkbox input[type="checkbox"],
+table.list td.checkbox input[type="checkbox"] {
+  margin: 0;
+  vertical-align: middle;
+}
+
+table.issues th.checkbox,
+table.list th.checkbox {
+  width: 32px;
+  padding-left: 12px;
+  padding-right: 4px;
+  text-align: center;
+}
+
+/* --- Subject column --- */
+table.issues td.subject {
+  max-width: 400px;
+}
+
+table.issues td.subject a {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+table.issues td.subject a:hover {
+  color: var(--bg-accent);
+}
+
+/* Indent levels for subtasks */
+table.issues td.subject .expander {
+  cursor: pointer;
+  color: var(--text-tertiary);
+  margin-right: 4px;
+}
+
+/* --- Status column — pill/badge style --- */
+table.issues td.status span,
+table.issues td.status {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+}
+
+table.issues td.status span {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* --- Tracker column — lighter badge --- */
+table.issues td.tracker span,
+table.issues td.tracker {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+}
+
+table.issues td.tracker span {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--bg-accent-subtle);
+  color: var(--bg-accent);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* --- Priority column — colored text by priority class --- */
+table.issues td.priority {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+/* Priority indicators via row classes */
+table.issues tr.priority-highest td.priority,
+table.issues tr.priority-5 td.priority {
+  color: var(--priority-urgent);
+}
+
+table.issues tr.priority-high td.priority,
+table.issues tr.priority-4 td.priority {
+  color: var(--priority-high);
+}
+
+table.issues tr.priority-default td.priority,
+table.issues tr.priority-normal td.priority,
+table.issues tr.priority-3 td.priority {
+  color: var(--priority-normal);
+}
+
+table.issues tr.priority-low td.priority,
+table.issues tr.priority-2 td.priority {
+  color: var(--priority-low);
+}
+
+table.issues tr.priority-lowest td.priority,
+table.issues tr.priority-1 td.priority {
+  color: var(--priority-low);
+}
+
+/* Priority with colored dot prefix */
+table.issues tr.priority-highest td.priority::before,
+table.issues tr.priority-5 td.priority::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--priority-urgent);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+table.issues tr.priority-high td.priority::before,
+table.issues tr.priority-4 td.priority::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--priority-high);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+table.issues tr.priority-default td.priority::before,
+table.issues tr.priority-normal td.priority::before,
+table.issues tr.priority-3 td.priority::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--priority-normal);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+table.issues tr.priority-low td.priority::before,
+table.issues tr.priority-2 td.priority::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--priority-low);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+table.issues tr.priority-lowest td.priority::before,
+table.issues tr.priority-1 td.priority::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--priority-low);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* --- Assigned to column --- */
+table.issues td.assigned_to {
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+table.issues td.assigned_to a {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+table.issues td.assigned_to a:hover {
+  color: var(--bg-accent);
+}
+
+/* --- Date columns --- */
+table.issues td.updated_on,
+table.issues td.created_on,
+table.issues td.start_date,
+table.issues td.due_date {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+/* --- Done ratio column --- */
+table.issues td.done_ratio {
+  width: 80px;
+}
+
+table.issues td.done_ratio table.progress {
+  width: 100%;
+}
+
+/* --- ID column --- */
+table.issues td.id {
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+}
+
+table.issues td.id a {
+  color: var(--text-tertiary);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+}
+
+table.issues td.id a:hover {
+  color: var(--bg-accent);
+}
+
+/* --- Category column --- */
+table.issues td.category {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* --- Version/Target column --- */
+table.issues td.fixed_version {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+table.issues td.fixed_version a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+table.issues td.fixed_version a:hover {
+  color: var(--bg-accent);
+}
+
+/* --- Estimated / Spent time columns --- */
+table.issues td.estimated_hours,
+table.issues td.spent_hours,
+table.issues td.total_estimated_hours,
+table.issues td.total_spent_hours {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* --- Closed/resolved issues: subtle strikethrough or muted --- */
+table.issues tr.closed td.subject a {
+  color: var(--text-tertiary);
+  text-decoration: line-through;
+}
+
+table.issues tr.closed td {
+  color: var(--text-tertiary);
+}
+
+/* --- Selected row (when checkbox is checked) --- */
+table.issues tr.context-menu-selection td,
+table.issues tr.hascontextmenu.context-menu-selection td {
+  background: var(--bg-accent-subtle);
+}
+
+/* --- Group headers in issue list --- */
+table.issues tr.group td {
+  padding: 12px 12px 8px 12px;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+table.issues tr.group td a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+}
+
+table.issues tr.group td span.count {
+  color: var(--text-tertiary);
+  font-weight: var(--font-weight-normal);
+  font-size: var(--font-size-xs);
+  margin-left: 4px;
+}
+
+/* --- Total row at bottom of issues list --- */
+table.issues tfoot td {
+  padding: 10px 12px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  border-top: 2px solid var(--border-primary);
+  background: transparent;
+}
+
+
+/* ============================================================================
+   2. ISSUE DETAIL PAGE
+   Linear-style clean detail view with clear hierarchy
+   ============================================================================ */
+
+/* --- Issue title --- */
+.issue h2,
+.issue .subject h3,
+div.issue h2,
+#content .issue h2 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+  margin-top: 0;
+}
+
+/* Issue subject when it has a tracker prefix */
+.issue .subject h3 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+  margin-top: 0;
+}
+
+/* Tracker badge next to issue title */
+.issue .tracker-name,
+.issue h2 .tracker-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--bg-accent);
+  background: var(--bg-accent-subtle);
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* --- Issue details section --- */
+.issue .details,
+div.issue .details {
+  margin-bottom: var(--space-6);
+}
+
+/* Author and creation info */
+.issue .details .author {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+.issue .details .author a {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+}
+
+.issue .details .author a:hover {
+  color: var(--bg-accent);
+}
+
+/* --- Attributes grid --- */
+.issue .attributes,
+div.issue .attributes {
+  margin-bottom: var(--space-6);
+}
+
+.issue .attributes table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.issue .attributes table td {
+  padding: 6px 12px 6px 0;
+  vertical-align: top;
+  border: none;
+}
+
+.issue .attributes table td.label,
+.issue .attributes .label,
+.issue .attribute .label {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  min-width: 120px;
+  white-space: nowrap;
+  padding-right: var(--space-3);
+}
+
+.issue .attributes table td.value,
+.issue .attributes .value,
+.issue .attribute .value {
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+}
+
+.issue .attribute {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: var(--space-2);
+}
+
+/* Split attributes into two columns */
+.issue .attributes .splitcontent {
+  display: flex;
+  gap: var(--space-8);
+}
+
+.issue .attributes .splitcontentleft,
+.issue .attributes .splitcontentright {
+  flex: 1;
+}
+
+/* --- Issue description --- */
+div.issue div.description,
+.issue .description {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-primary);
+}
+
+.issue div.description p.label,
+.issue .description > .label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-2);
+}
+
+.issue .description .wiki {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-relaxed);
+  color: var(--text-primary);
+}
+
+.issue .description .wiki p {
+  margin-bottom: var(--space-3);
+}
+
+/* --- Related issues --- */
+.issue .relations,
+div#relations {
+  margin-top: var(--space-6);
+}
+
+div#relations .contextual {
+  float: right;
+}
+
+.issue .relations table td {
+  padding: 6px 8px;
+  border: none;
+  font-size: var(--font-size-base);
+}
+
+.issue .relations table td a {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.issue .relations table td a:hover {
+  color: var(--bg-accent);
+}
+
+/* --- Subtasks --- */
+div#issue_tree {
+  margin-top: var(--space-6);
+}
+
+div#issue_tree table.list td {
+  padding: 6px 8px;
+}
+
+/* --- Issue changesets --- */
+#issue-changesets,
+div#issue-changesets {
+  margin-top: var(--space-8);
+}
+
+#issue-changesets h3 {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+}
+
+#issue-changesets .changeset {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-secondary);
+  font-size: var(--font-size-sm);
+}
+
+#issue-changesets .changeset p {
+  margin: var(--space-1) 0;
+}
+
+/* --- History / Journal entries --- */
+#history,
+div#history {
+  margin-top: var(--space-8);
+}
+
+#history h3 {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+}
+
+.journal,
+div.journal {
+  border-bottom: 1px solid var(--border-secondary);
+  padding: var(--space-4) 0;
+}
+
+.journal:last-child {
+  border-bottom: none;
+}
+
+/* Journal header: user + timestamp */
+.journal h4,
+.journal .journal-header {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.journal .user,
+.journal h4 a.user {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.journal .user:hover,
+.journal h4 a.user:hover {
+  color: var(--bg-accent);
+}
+
+.journal .journal-link,
+.journal h4 a.journal-link {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  text-decoration: none;
+  margin-left: var(--space-2);
+}
+
+.journal .journal-link:hover,
+.journal h4 a.journal-link:hover {
+  color: var(--bg-accent);
+}
+
+/* Journal content (wiki text) */
+.journal .wiki {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--text-primary);
+}
+
+.journal .wiki p {
+  margin-bottom: var(--space-2);
+}
+
+/* Journal details — attribute changes */
+.journal ul.details,
+.journal .details {
+  margin: var(--space-2) 0;
+  padding-left: var(--space-5);
+}
+
+.journal ul.details li {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-1);
+  line-height: var(--line-height-normal);
+}
+
+.journal ul.details li strong {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.journal ul.details li .old-value {
+  text-decoration: line-through;
+  color: var(--text-tertiary);
+}
+
+.journal ul.details li .new-value {
+  color: var(--text-primary);
+}
+
+/* Private notes */
+.journal.private-notes {
+  background: var(--bg-accent-subtle);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  margin: var(--space-2) 0;
+}
+
+/* --- Contextual links (edit, delete, quote, etc.) --- */
+div.contextual,
+.contextual {
+  float: right;
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+}
+
+div.contextual a,
+.contextual a {
+  color: var(--text-tertiary);
+  text-decoration: none;
+  margin-left: var(--space-2);
+  transition: color 0.15s ease;
+}
+
+div.contextual a:hover,
+.contextual a:hover {
+  color: var(--text-primary);
+}
+
+/* --- Issue attachments --- */
+.issue .attachments,
+div.attachments {
+  margin-top: var(--space-4);
+}
+
+div.attachments table {
+  width: 100%;
+}
+
+div.attachments table td {
+  padding: 4px 8px;
+  font-size: var(--font-size-sm);
+  border: none;
+}
+
+div.attachments table td.filename a {
+  color: var(--bg-accent);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+}
+
+div.attachments table td.filename a:hover {
+  text-decoration: underline;
+}
+
+div.attachments table td.filesize {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+}
+
+div.attachments table td.author {
+  color: var(--text-secondary);
+}
+
+/* --- Watchers --- */
+div#watchers {
+  margin-top: var(--space-4);
+}
+
+div#watchers ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+div#watchers ul li {
+  padding: var(--space-1) 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+div#watchers ul li a.user {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+div#watchers ul li a.delete {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  margin-left: var(--space-1);
+}
+
+div#watchers ul li a.delete:hover {
+  color: var(--status-red);
+}
+
+
+/* ============================================================================
+   3. ALL FORM ELEMENTS
+   Clean, modern form styling inspired by Linear.app
+   ============================================================================ */
+
+/* --- Text-type inputs --- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding: 6px 10px;
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  line-height: var(--line-height-normal);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="number"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+input[type="datetime-local"]:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.15);
+  outline: none;
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder,
+input[type="email"]::placeholder,
+input[type="url"]::placeholder,
+input[type="search"]::placeholder,
+input[type="number"]::placeholder,
+input[type="tel"]::placeholder {
+  color: var(--text-tertiary);
+}
+
+input[type="text"]:disabled,
+input[type="password"]:disabled,
+input[type="email"]:disabled,
+input[type="number"]:disabled {
+  background: var(--bg-secondary);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+  border-color: var(--border-secondary);
+}
+
+/* --- Select dropdowns --- */
+select {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding: 6px 32px 6px 10px;
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  line-height: var(--line-height-normal);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239CA0A8' d='M3.4 4.5L6 7.1l2.6-2.6.8.8L6 8.7 2.6 5.3z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  cursor: pointer;
+}
+
+select:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.15);
+  outline: none;
+}
+
+select:disabled {
+  background-color: var(--bg-secondary);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+  border-color: var(--border-secondary);
+}
+
+select[multiple] {
+  padding: 6px 10px;
+  background-image: none;
+  height: auto;
+  min-height: 80px;
+}
+
+select[multiple] option {
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* --- Textarea --- */
+textarea {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  line-height: var(--line-height-normal);
+  min-height: 120px;
+  resize: vertical;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.15);
+  outline: none;
+}
+
+textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+textarea:disabled {
+  background: var(--bg-secondary);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
+
+/* --- Checkboxes and radios --- */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--bg-accent);
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+  outline: 2px solid rgba(94, 106, 210, 0.3);
+  outline-offset: 1px;
+}
+
+/* --- File input --- */
+input[type="file"] {
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family);
+  color: var(--text-secondary);
+  padding: var(--space-1) 0;
+}
+
+/* --- Labels --- */
+label {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+/* --- Tabular form layout (Redmine's standard form layout) --- */
+.tabular p,
+.tabular.settings p {
+  margin-bottom: var(--space-3);
+}
+
+.tabular label,
+.tabular.settings label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  display: inline-block;
+  min-width: 180px;
+  text-align: right;
+  padding-right: var(--space-3);
+  vertical-align: top;
+}
+
+/* Required field indicator */
+.tabular label .required,
+label .required {
+  color: var(--status-red);
+  font-weight: var(--font-weight-normal);
+}
+
+/* Hint text below fields */
+.tabular p em,
+p.hint,
+em.info {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  font-style: normal;
+  display: block;
+  margin-top: var(--space-1);
+}
+
+/* --- Fieldsets --- */
+fieldset {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-5);
+  background: transparent;
+}
+
+fieldset legend {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  padding: 0 var(--space-2);
+}
+
+fieldset fieldset {
+  border-color: var(--border-secondary);
+  margin-bottom: var(--space-3);
+  padding: var(--space-4);
+}
+
+/* Collapsible fieldsets (Redmine 5.x+) */
+fieldset.collapsible legend {
+  cursor: pointer;
+}
+
+fieldset.collapsible.collapsed {
+  border-bottom-width: 1px;
+  padding-bottom: var(--space-2);
+}
+
+/* --- Error messages on forms --- */
+#errorExplanation,
+div.flash.error,
+.errorExplanation {
+  border: 1px solid var(--status-red);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin-bottom: var(--space-5);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+#errorExplanation h2,
+.errorExplanation h2 {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--status-red);
+  margin-bottom: var(--space-2);
+}
+
+#errorExplanation ul,
+.errorExplanation ul {
+  margin: 0;
+  padding-left: var(--space-5);
+}
+
+#errorExplanation ul li,
+.errorExplanation ul li {
+  font-size: var(--font-size-sm);
+  color: var(--status-red);
+  margin-bottom: var(--space-1);
+}
+
+/* Highlight fields with errors */
+.tabular p.error label {
+  color: var(--status-red);
+}
+
+input.error,
+select.error,
+textarea.error,
+.tabular p.error input,
+.tabular p.error select,
+.tabular p.error textarea {
+  border-color: var(--status-red);
+}
+
+input.error:focus,
+select.error:focus,
+textarea.error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+/* --- Wiki toolbar (for textarea editors) --- */
+.jstEditor {
+  margin-bottom: 0;
+}
+
+.jstEditor .jstElements {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-bottom: none;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  padding: var(--space-1) var(--space-2);
+}
+
+.jstEditor .jstElements button {
+  background: transparent;
+  border: none;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.jstEditor .jstElements button:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.jstEditor textarea {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* --- Inline edit form (issue detail) --- */
+.edit-issue-form input[type="text"],
+.edit-issue-form select,
+.edit-issue-form textarea {
+  width: 100%;
+}
+
+/* --- Search form --- */
+#search-form input[type="text"],
+input#search-input {
+  border-radius: var(--radius-lg);
+  padding: 6px 14px;
+  min-width: 200px;
+}
+
+/* --- Quick search in header --- */
+#quick-search input[type="text"] {
+  border-radius: var(--radius-lg);
+  padding: 4px 12px;
+  font-size: var(--font-size-sm);
+  background: var(--bg-secondary);
+  border-color: var(--border-secondary);
+}
+
+#quick-search input[type="text"]:focus {
+  background: var(--bg-primary);
+  border-color: var(--border-focus);
+}
+
+
+/* ============================================================================
+   4. ALL BUTTONS
+   Primary (accent purple), Secondary (subtle), Destructive (red)
+   ============================================================================ */
+
+/* --- Primary buttons --- */
+input[type="submit"],
+input[type="button"],
+button:not(.jstElements button),
+.button,
+a.button {
+  background: var(--bg-accent);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 6px 14px;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-decoration: none;
+  line-height: var(--line-height-normal);
+  vertical-align: middle;
+  white-space: nowrap;
+  -webkit-appearance: none;
+}
+
+input[type="submit"]:hover,
+input[type="button"]:hover,
+button:not(.jstElements button):hover,
+.button:hover,
+a.button:hover {
+  background: var(--bg-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-on-accent);
+  text-decoration: none;
+}
+
+input[type="submit"]:active,
+input[type="button"]:active,
+button:not(.jstElements button):active,
+.button:active,
+a.button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+input[type="submit"]:focus,
+input[type="button"]:focus,
+button:not(.jstElements button):focus,
+.button:focus,
+a.button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.3);
+}
+
+input[type="submit"]:disabled,
+input[type="button"]:disabled,
+button:disabled,
+.button:disabled,
+a.button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* --- Secondary / contextual buttons --- */
+.contextual a,
+a.icon-only,
+a.icon {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding: 4px 10px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family);
+  text-decoration: none;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  line-height: var(--line-height-normal);
+  vertical-align: middle;
+}
+
+.contextual a:hover,
+a.icon-only:hover,
+a.icon:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  text-decoration: none;
+  border-color: var(--border-primary);
+}
+
+.contextual a:active,
+a.icon-only:active,
+a.icon:active {
+  background: var(--bg-secondary);
+}
+
+/* Reset contextual link inside issue detail (they don't all need border) */
+div.contextual a {
+  border: none;
+  padding: 2px 6px;
+}
+
+div.contextual a:hover {
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+}
+
+/* --- Destructive buttons --- */
+a.icon-del,
+a.icon.icon-del,
+input.delete,
+a.delete,
+input[type="submit"].delete {
+  color: var(--status-red);
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+a.icon-del:hover,
+a.icon.icon-del:hover,
+input.delete:hover,
+a.delete:hover,
+input[type="submit"].delete:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--status-red);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+/* --- Button groups --- */
+.buttons,
+p.buttons {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* Cancel link next to submit buttons */
+.buttons a,
+p.buttons a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: var(--font-size-base);
+  padding: 6px 10px;
+  transition: color 0.15s ease;
+}
+
+.buttons a:hover,
+p.buttons a:hover {
+  color: var(--text-primary);
+}
+
+/* --- "New issue" / "New" buttons specifically --- */
+a.icon.icon-add {
+  background: var(--bg-accent);
+  color: var(--text-on-accent);
+  border: none;
+  padding: 6px 12px;
+  font-weight: var(--font-weight-medium);
+}
+
+a.icon.icon-add:hover {
+  background: var(--bg-accent-hover);
+  color: var(--text-on-accent);
+}
+
+/* --- Toggle / small action links in issue forms --- */
+a.toggle-multiselect,
+a.toggle-checkboxes {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  text-decoration: none;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+a.toggle-multiselect:hover,
+a.toggle-checkboxes:hover {
+  color: var(--bg-accent);
+}
+
+/* --- Redmine's icon classes on buttons/links --- */
+input[type="submit"].icon,
+a.icon {
+  padding-left: 20px;
+  background-repeat: no-repeat;
+  background-position: 6px center;
+}
+
+
+/* ============================================================================
+   5. ALL GENERAL TABLES
+   Clean style matching issues table but generic
+   ============================================================================ */
+
+/* --- General tables --- */
+table.filecontent,
+table.files,
+table.time-entries,
+table.versions,
+table.members,
+table.plugins,
+table.roles,
+table.trackers,
+table.workflows,
+table.enumerations {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+}
+
+/* --- Table headers (general) --- */
+table.filecontent thead th,
+table.files thead th,
+table.time-entries thead th,
+table.versions thead th,
+table.members thead th,
+table.plugins thead th,
+table.roles thead th,
+table.trackers thead th {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--border-primary);
+  background: transparent;
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* --- Table cells (general) --- */
+table.filecontent td,
+table.files td,
+table.time-entries td,
+table.versions td,
+table.members td,
+table.plugins td,
+table.roles td,
+table.trackers td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-secondary);
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+  vertical-align: middle;
+}
+
+/* --- Row hover (general) --- */
+table.filecontent tbody tr:hover,
+table.files tbody tr:hover,
+table.time-entries tbody tr:hover,
+table.versions tbody tr:hover,
+table.members tbody tr:hover {
+  background: var(--bg-tertiary);
+}
+
+/* --- Sort indicators for general tables --- */
+table.list thead th.sort a {
+  color: var(--text-secondary);
+}
+
+table.list thead th.sort.asc a::after {
+  content: " \25B2";
+  font-size: 9px;
+}
+
+table.list thead th.sort.desc a::after {
+  content: " \25BC";
+  font-size: 9px;
+}
+
+/* --- Repository / files table specifics --- */
+table.filecontent {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+}
+
+table.filecontent td.line-num {
+  color: var(--text-tertiary);
+  text-align: right;
+  padding-right: var(--space-3);
+  user-select: none;
+  -webkit-user-select: none;
+  width: 1%;
+  white-space: nowrap;
+  border-right: 1px solid var(--border-secondary);
+}
+
+table.filecontent td.line-code {
+  padding-left: var(--space-3);
+  white-space: pre;
+}
+
+/* --- Files list --- */
+table.files td.filename a {
+  color: var(--bg-accent);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+}
+
+table.files td.filename a:hover {
+  text-decoration: underline;
+}
+
+table.files td.filesize {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* --- Time entries table --- */
+table.time-entries td.hours {
+  font-weight: var(--font-weight-semibold);
+  text-align: right;
+  white-space: nowrap;
+}
+
+table.time-entries td.activity {
+  color: var(--text-secondary);
+}
+
+table.time-entries td.comments {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- Admin tables --- */
+table.plugins td,
+table.roles td,
+table.trackers td,
+table.enumerations td {
+  font-size: var(--font-size-base);
+}
+
+table.plugins td a,
+table.roles td a,
+table.trackers td a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+}
+
+table.plugins td a:hover,
+table.roles td a:hover,
+table.trackers td a:hover {
+  color: var(--bg-accent);
+}
+
+/* --- Settings table --- */
+table.settings td {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border-secondary);
+  font-size: var(--font-size-base);
+}
+
+/* --- Versions table --- */
+table.versions td.name a {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+table.versions td.name a:hover {
+  color: var(--bg-accent);
+}
+
+table.versions td.date {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+/* --- Wiki diff table --- */
+table.diff {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  border-collapse: collapse;
+}
+
+table.diff td {
+  padding: 1px 8px;
+  border: none;
+  vertical-align: top;
+}
+
+table.diff td.line-num {
+  color: var(--text-tertiary);
+  text-align: right;
+  padding-right: var(--space-2);
+  user-select: none;
+  -webkit-user-select: none;
+  border-right: 1px solid var(--border-secondary);
+  min-width: 35px;
+}
+
+/* Diff additions and deletions */
+table.diff td ins,
+table.diff span.ins {
+  background: rgba(76, 175, 80, 0.15);
+  text-decoration: none;
+}
+
+table.diff td del,
+table.diff span.del {
+  background: rgba(239, 68, 68, 0.15);
+  text-decoration: line-through;
+}
+
+
+/* ============================================================================
+   6. PAGINATION
+   Clean, minimal pagination controls
+   ============================================================================ */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: var(--space-5) 0;
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+  flex-wrap: wrap;
+}
+
+.pagination a,
+.pagination span {
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  min-height: 28px;
+  font-size: var(--font-size-base);
+}
+
+/* Current page */
+.pagination span.current {
+  background: var(--bg-accent);
+  color: var(--text-on-accent);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Page links */
+.pagination a {
+  color: var(--text-secondary);
+  background: transparent;
+}
+
+.pagination a:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Previous / Next links */
+.pagination a.previous,
+.pagination a.next {
+  font-weight: var(--font-weight-medium);
+}
+
+/* Ellipsis */
+.pagination span.gap {
+  color: var(--text-tertiary);
+  padding: 4px 4px;
+}
+
+/* Items count */
+.pagination .items,
+.pagination span.items {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  margin-left: var(--space-3);
+  padding: 0;
+}
+
+/* Per-page links */
+.pagination .per-page {
+  margin-left: auto;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+}
+
+.pagination .per-page a {
+  font-size: var(--font-size-sm);
+  min-width: auto;
+  min-height: auto;
+  padding: 2px 6px;
+}
+
+.pagination .per-page a.selected,
+.pagination .per-page a:hover {
+  background: var(--bg-tertiary);
+}
+
+
+/* ============================================================================
+   7. ACTIVITY / HISTORY FEED
+   Timeline-style activity feed
+   ============================================================================ */
+
+#activity {
+  font-family: var(--font-family);
+}
+
+/* Day headers */
+#activity dt,
+#activity h3 {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-top: var(--space-5);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+#activity dt:first-child {
+  margin-top: 0;
+}
+
+/* Activity entries */
+#activity dd {
+  padding: var(--space-2) 0 var(--space-2) var(--space-5);
+  margin: 0;
+  position: relative;
+}
+
+/* Subtle left-border timeline indicator */
+#activity dd::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border-secondary);
+}
+
+/* Timeline dot */
+#activity dd::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 14px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-primary);
+}
+
+/* Time stamp */
+#activity dd span.time,
+#activity dd .time {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  margin-left: var(--space-2);
+}
+
+/* Project link */
+#activity dd a.project,
+#activity dd .project {
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+}
+
+#activity dd a.project:hover {
+  color: var(--bg-accent);
+}
+
+/* Activity entry title link */
+#activity dd a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+}
+
+#activity dd a:hover {
+  color: var(--bg-accent);
+}
+
+/* Activity description text */
+#activity dd .description,
+#activity dd span.description {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-1);
+  display: block;
+  line-height: var(--line-height-normal);
+}
+
+/* Author in activity */
+#activity dd span.author,
+#activity dd .author {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+#activity dd span.author a {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Activity checkboxes (filter) */
+#activity-selector {
+  margin-bottom: var(--space-4);
+}
+
+#activity-selector label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-right: var(--space-3);
+}
+
+
+/* ============================================================================
+   8. PROGRESS BARS
+   Clean, rounded progress bars
+   ============================================================================ */
+
+table.progress {
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 10px;
+  width: 80px;
+  background: var(--bg-tertiary);
+  display: inline-table;
+  vertical-align: middle;
+}
+
+table.progress td {
+  padding: 0;
+  height: 10px;
+  border: none;
+}
+
+table.progress td.closed {
+  background: var(--status-green);
+}
+
+table.progress td.done {
+  background: var(--bg-accent);
+}
+
+table.progress td.open {
+  background: var(--bg-tertiary);
+}
+
+/* Progress percentage text */
+p.percent,
+span.percent {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  margin-left: var(--space-1);
+  vertical-align: middle;
+}
+
+/* Larger progress bar in issue detail */
+.issue table.progress {
+  width: 120px;
+  height: 8px;
+}
+
+/* Roadmap version progress */
+.version table.progress {
+  width: 100%;
+  height: 12px;
+  border-radius: var(--radius-md);
+}
+
+/* Version overview progress */
+#version-summary table.progress,
+.version-overview table.progress {
+  width: 100%;
+  height: 14px;
+  border-radius: var(--radius-md);
+}
+
+/* Done ratio in issue list */
+table.issues td.done_ratio table.progress {
+  width: 60px;
+  height: 8px;
+}
+
+
+/* ============================================================================
+   ADDITIONAL EDGE CASES & REFINEMENTS
+   ============================================================================ */
+
+/* --- Query filters (issue list filter bar) --- */
+#query_form_content,
+fieldset#filters-table {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+#query_form_content select,
+fieldset#filters-table select {
+  font-size: var(--font-size-sm);
+}
+
+#query_form_content input[type="text"],
+fieldset#filters-table input[type="text"] {
+  font-size: var(--font-size-sm);
+}
+
+/* Filter add/remove controls */
+.add-filter,
+a.add-filter {
+  color: var(--bg-accent);
+  font-size: var(--font-size-sm);
+  text-decoration: none;
+}
+
+.add-filter:hover,
+a.add-filter:hover {
+  text-decoration: underline;
+}
+
+/* --- Column options in query settings --- */
+#columns label,
+#available_columns label {
+  font-size: var(--font-size-sm);
+}
+
+/* --- Options (available/selected columns) --- */
+select#available_columns,
+select#selected_columns {
+  min-height: 120px;
+  width: 200px;
+}
+
+/* --- Inline editing in issue list --- */
+.inline-edit input[type="text"],
+.inline-edit select {
+  padding: 2px 6px;
+  font-size: var(--font-size-sm);
+}
+
+/* --- Bulk edit form --- */
+#bulk-edit-form .tabular label {
+  min-width: 140px;
+}
+
+/* --- Time log form --- */
+#time-entry-form .tabular label {
+  min-width: 140px;
+}
+
+/* --- Issue form layout --- */
+#issue-form .tabular label {
+  min-width: 160px;
+}
+
+#issue-form select,
+#issue-form input[type="text"] {
+  max-width: 500px;
+}
+
+#issue-form textarea {
+  max-width: 100%;
+}
+
+/* --- Copy/move issue form --- */
+#copy_form .tabular label,
+#move_form .tabular label {
+  min-width: 160px;
+}
+
+/* --- Project settings forms --- */
+#project-form .tabular label {
+  min-width: 180px;
+}
+
+/* --- User preferences form --- */
+#user_form .tabular label,
+.myaccount-form .tabular label {
+  min-width: 180px;
+}
+
+/* --- Admin settings form --- */
+.settings .tabular label {
+  min-width: 200px;
+}
+
+/* --- Context menu (right-click on issues) --- */
+#context-menu {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-1) 0;
+  min-width: 180px;
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+  z-index: 1000;
+}
+
+#context-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#context-menu ul li {
+  padding: 0;
+}
+
+#context-menu ul li a {
+  display: block;
+  padding: 6px 12px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: var(--font-size-base);
+  transition: background-color 0.1s ease;
+  border-radius: 0;
+}
+
+#context-menu ul li a:hover {
+  background: var(--bg-accent);
+  color: var(--text-on-accent);
+}
+
+#context-menu ul li a.icon {
+  padding-left: 28px;
+  background-repeat: no-repeat;
+  background-position: 8px center;
+  border: none;
+}
+
+/* Context menu separator */
+#context-menu ul li.folder ul {
+  padding-left: 0;
+}
+
+#context-menu ul li.folder > a {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: var(--space-2) 12px var(--space-1);
+  cursor: default;
+}
+
+#context-menu ul li.folder > a:hover {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+/* Separator line */
+#context-menu li.separator {
+  border-top: 1px solid var(--border-secondary);
+  margin: var(--space-1) 0;
+}
+
+/* --- Tooltip / autocomplete dropdown --- */
+.autocomplete,
+div.autocomplete {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1001;
+}
+
+.autocomplete ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.autocomplete ul li {
+  padding: 6px 12px;
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.autocomplete ul li:hover,
+.autocomplete ul li.selected {
+  background: var(--bg-accent-subtle);
+  color: var(--bg-accent);
+}
+
+/* --- Drag handle for sortable tables --- */
+.sort-handle {
+  cursor: grab;
+  color: var(--text-tertiary);
+}
+
+.sort-handle:active {
+  cursor: grabbing;
+}
+
+/* --- Table totals row --- */
+table.list tfoot td {
+  padding: 10px 12px;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  border-top: 2px solid var(--border-primary);
+  border-bottom: none;
+  background: transparent;
+}
+
+/* --- Empty state for tables --- */
+table.list .nodata,
+table.issues .nodata,
+p.nodata {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-base);
+  padding: var(--space-8) var(--space-4);
+}
+
+/* --- Saved queries list --- */
+.query-list,
+ul.queries {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.query-list li,
+ul.queries li {
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.query-list li a,
+ul.queries li a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+}
+
+.query-list li a:hover,
+ul.queries li a:hover {
+  color: var(--bg-accent);
+}
+
+/* --- Image preview / thumbnails --- */
+.thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.thumbnails a {
+  display: inline-block;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.thumbnails a:hover {
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-sm);
+}
+
+.thumbnails a img {
+  display: block;
+  max-width: 180px;
+  height: auto;
+}
+
+/* --- Subtask indentation in issue list --- */
+table.issues .icon-subtask {
+  margin-left: 4px;
+}
+
+/* --- Quick add form at bottom of issue list --- */
+tr.quick-add-issue td {
+  padding: var(--space-2) var(--space-3);
+}
+
+tr.quick-add-issue input[type="text"] {
+  width: 100%;
+  padding: 4px 8px;
+  font-size: var(--font-size-sm);
+}
+
+/* --- Token / tag input (Redmine 5.x) --- */
+.token-input-list {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  padding: 2px;
+  min-height: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.token-input-list:focus-within {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.15);
+}
+
+.token-input-list li.token-input-token {
+  background: var(--bg-accent-subtle);
+  color: var(--bg-accent);
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.token-input-list li.token-input-token span {
+  cursor: pointer;
+  color: var(--bg-accent);
+  font-weight: var(--font-weight-semibold);
+}
+
+.token-input-list li.token-input-token span:hover {
+  color: var(--status-red);
+}
+
+.token-input-list li.token-input-input-token input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: var(--font-size-sm);
+  padding: 2px 4px;
+  color: var(--text-primary);
+}
+
+/* --- Confirmation dialog / overlay --- */
+.ui-dialog,
+.ui-widget-overlay {
+  font-family: var(--font-family);
+}
+
+.ui-dialog {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  padding: 0;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+  background: transparent;
+  border-bottom: 1px solid var(--border-primary);
+  padding: var(--space-4);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.ui-dialog .ui-dialog-content {
+  padding: var(--space-5);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+  border-top: 1px solid var(--border-primary);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+/* --- Responsive adjustments for form layouts --- */
+@media screen and (max-width: 900px) {
+  .tabular label,
+  .tabular.settings label {
+    min-width: 140px;
+    font-size: var(--font-size-xs);
+  }
+
+  table.issues td,
+  table.list td {
+    padding: 8px 8px;
+  }
+
+  table.issues th,
+  table.list th {
+    padding: 6px 8px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .tabular label,
+  .tabular.settings label {
+    display: block;
+    text-align: left;
+    min-width: auto;
+    margin-bottom: var(--space-1);
+  }
+
+  table.issues td.checkbox {
+    display: none;
+  }
+
+  table.issues th.checkbox {
+    display: none;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  .buttons,
+  p.buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .buttons input[type="submit"],
+  p.buttons input[type="submit"] {
+    width: 100%;
+  }
+}
+/* ==========================================================================
+   WS Redmine Theme — Part 3: Wiki, Admin & Special Pages
+   Linear.app-inspired design — Light Mode
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. WIKI PAGES — Clean typography, excellent readability
+   ========================================================================== */
+
+div.wiki {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  max-width: 800px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Wiki headings — clear hierarchy with generous spacing */
+div.wiki h1,
+.wiki h1 {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 32px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+div.wiki h1:first-child,
+.wiki h1:first-child {
+  margin-top: 0;
+}
+
+div.wiki h2,
+.wiki h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 28px 0 12px;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+div.wiki h3,
+.wiki h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 24px 0 8px;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+}
+
+div.wiki h4,
+.wiki h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 20px 0 8px;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+div.wiki h5,
+.wiki h5 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 16px 0 6px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+div.wiki h6,
+.wiki h6 {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 16px 0 6px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Wiki paragraphs */
+div.wiki p,
+.wiki p {
+  margin: 0 0 16px 0;
+  line-height: 1.7;
+}
+
+/* Wiki lists */
+div.wiki ul,
+.wiki ul {
+  padding-left: 24px;
+  margin: 0 0 16px 0;
+  list-style-type: disc;
+}
+
+div.wiki ol,
+.wiki ol {
+  padding-left: 24px;
+  margin: 0 0 16px 0;
+  list-style-type: decimal;
+}
+
+div.wiki li,
+.wiki li {
+  margin-bottom: 4px;
+  line-height: 1.7;
+}
+
+div.wiki li > ul,
+div.wiki li > ol,
+.wiki li > ul,
+.wiki li > ol {
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+/* Wiki links */
+div.wiki a,
+.wiki a {
+  color: var(--bg-accent);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+div.wiki a:hover,
+.wiki a:hover {
+  text-decoration: underline;
+  color: var(--bg-accent-hover);
+}
+
+/* Wiki external links */
+div.wiki a.external {
+  color: var(--bg-accent);
+}
+
+div.wiki a.external:hover {
+  text-decoration: underline;
+}
+
+/* Wiki new/missing page links */
+div.wiki a.new {
+  color: var(--status-red);
+}
+
+/* Wiki code blocks — pre */
+div.wiki pre,
+.wiki pre {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+  color: var(--text-primary);
+  tab-size: 4;
+  -moz-tab-size: 4;
+}
+
+/* Wiki inline code */
+div.wiki code,
+.wiki code {
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+/* Wiki code inside pre — reset double-styling */
+div.wiki pre code,
+.wiki pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+  line-height: inherit;
+  word-break: normal;
+}
+
+/* Wiki blockquote */
+div.wiki blockquote,
+.wiki blockquote {
+  border-left: 3px solid var(--bg-accent);
+  padding: 8px 16px;
+  margin: 16px 0;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+div.wiki blockquote p:last-child,
+.wiki blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Wiki tables */
+div.wiki table,
+.wiki table {
+  width: auto;
+  border-collapse: collapse;
+  margin: 16px 0;
+}
+
+div.wiki table th,
+.wiki table th {
+  background: var(--bg-secondary);
+  padding: 8px 12px;
+  border: 1px solid var(--border-primary);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-primary);
+  text-align: left;
+}
+
+div.wiki table td,
+.wiki table td {
+  padding: 8px 12px;
+  border: 1px solid var(--border-primary);
+  font-size: 14px;
+  vertical-align: top;
+}
+
+div.wiki table tr:hover td {
+  background: var(--bg-secondary);
+}
+
+/* Wiki images */
+div.wiki img,
+.wiki img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+}
+
+/* Wiki horizontal rule */
+div.wiki hr,
+.wiki hr {
+  border: 0;
+  height: 1px;
+  background: var(--border-primary);
+  margin: 32px 0;
+}
+
+/* Wiki definition lists */
+div.wiki dl {
+  margin: 0 0 16px 0;
+}
+
+div.wiki dt {
+  font-weight: 600;
+  margin: 12px 0 4px;
+  color: var(--text-primary);
+}
+
+div.wiki dd {
+  margin-left: 24px;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+/* Wiki table of contents (TOC) */
+div.wiki a.wiki-anchor {
+  display: none;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  margin-left: 4px;
+  font-size: 0.85em;
+}
+
+div.wiki h1:hover a.wiki-anchor,
+div.wiki h2:hover a.wiki-anchor,
+div.wiki h3:hover a.wiki-anchor,
+div.wiki h4:hover a.wiki-anchor {
+  display: inline;
+}
+
+div.wiki a.wiki-anchor:hover {
+  color: var(--bg-accent);
+}
+
+/* Wiki TOC box */
+ul.toc {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: 16px 16px 16px 32px;
+  margin: 0 0 24px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+ul.toc a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+ul.toc a:hover {
+  color: var(--bg-accent);
+}
+
+ul.toc > li {
+  font-weight: 500;
+}
+
+ul.toc ul {
+  padding-left: 16px;
+  margin: 2px 0;
+}
+
+ul.toc li {
+  margin-bottom: 2px;
+}
+
+/* Wiki page add attachment */
+#wiki_add_attachment {
+  margin-top: 16px;
+}
+
+/* Wiki edit toolbar */
+.jstEditor {
+  margin-bottom: 16px;
+}
+
+.jstEditor .jstHandle {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.jstElements {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-bottom: none;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  padding: 4px;
+}
+
+.jstElements button {
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: var(--text-secondary);
+}
+
+.jstElements button:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Wiki preview area */
+#preview {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin: 16px 0;
+}
+
+#preview fieldset {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin: 0;
+}
+
+#preview fieldset legend {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 0 8px;
+}
+
+
+/* ==========================================================================
+   2. FLASH MESSAGES / NOTIFICATIONS
+   ========================================================================== */
+
+/* Base flash styling */
+#flash_notice,
+#flash_error,
+#flash_warning {
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+/* Success / Notice */
+#flash_notice {
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  color: #065F46;
+}
+
+#flash_notice a {
+  color: #065F46;
+  font-weight: 500;
+  text-decoration: underline;
+  transition: all 0.15s ease;
+}
+
+#flash_notice a:hover {
+  color: #047857;
+}
+
+/* Error */
+#flash_error {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: #991B1B;
+}
+
+#flash_error a {
+  color: #991B1B;
+  font-weight: 500;
+  text-decoration: underline;
+  transition: all 0.15s ease;
+}
+
+#flash_error a:hover {
+  color: #B91C1C;
+}
+
+/* Warning */
+#flash_warning {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  color: #92400E;
+}
+
+#flash_warning a {
+  color: #92400E;
+  font-weight: 500;
+  text-decoration: underline;
+  transition: all 0.15s ease;
+}
+
+#flash_warning a:hover {
+  color: #B45309;
+}
+
+/* Generic flash container */
+.flash {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flash a {
+  color: inherit;
+  font-weight: 500;
+}
+
+/* Close button within flash if present */
+.flash .close,
+.flash a.close {
+  margin-left: auto;
+  color: inherit;
+  opacity: 0.6;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.flash .close:hover,
+.flash a.close:hover {
+  opacity: 1;
+  text-decoration: none;
+}
+
+/* No data / empty state */
+.nodata,
+p.nodata {
+  color: var(--text-tertiary);
+  font-size: 14px;
+  text-align: center;
+  padding: 40px 0;
+  line-height: 1.6;
+}
+
+/* Info / notification boxes */
+.box.info,
+div.flash.notice {
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  color: #065F46;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+div.flash.error {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: #991B1B;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+div.flash.warning {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  color: #92400E;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+
+/* ==========================================================================
+   3. LOGIN PAGE — Centered card, clean and professional
+   ========================================================================== */
+
+/* Login form container — centered card */
+#login-form {
+  max-width: 400px;
+  margin: 60px auto;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  padding: 40px;
+  box-shadow: var(--shadow-lg);
+}
+
+#login-form h2 {
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+/* Login form labels */
+#login-form label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+/* Login form text inputs */
+#login-form input[type="text"],
+#login-form input[type="password"] {
+  width: 100%;
+  margin-bottom: 16px;
+  font-family: var(--font-family);
+  font-size: 13px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+#login-form input[type="text"]:focus,
+#login-form input[type="password"]:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.12);
+}
+
+#login-form input[type="text"]::placeholder,
+#login-form input[type="password"]::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Login submit button */
+#login-form input[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  margin-top: 8px;
+  font-family: var(--font-family);
+  font-weight: 500;
+  background: var(--bg-accent);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+#login-form input[type="submit"]:hover {
+  background: var(--bg-accent-hover);
+}
+
+#login-form input[type="submit"]:active {
+  transform: translateY(1px);
+}
+
+/* Login form links (forgot password, register) */
+#login-form a {
+  color: var(--bg-accent);
+  font-size: 13px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+#login-form a:hover {
+  text-decoration: underline;
+  color: var(--bg-accent-hover);
+}
+
+/* Login form checkbox (remember me) */
+#login-form input[type="checkbox"] {
+  margin-right: 6px;
+  accent-color: var(--bg-accent);
+}
+
+#login-form label.inline {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+/* Login form tabular layout override */
+#login-form .tabular p {
+  margin-bottom: 0;
+  padding-left: 0;
+}
+
+#login-form .tabular label {
+  width: auto;
+  text-align: left;
+  margin-left: 0;
+  float: none;
+}
+
+/* Login page layout adjustments */
+body.action-login #main {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 0;
+}
+
+body.action-login #content {
+  padding: 0;
+  max-width: 100%;
+  flex: none;
+}
+
+body.action-login #footer {
+  margin-top: 40px;
+}
+
+/* Optional: simplify header on login page */
+body.action-login #header {
+  border-bottom: 1px solid var(--border-primary);
+}
+
+body.action-login #sidebar {
+  display: none;
+}
+
+/* Register page — similar clean card */
+body.action-register #content {
+  max-width: 600px;
+  margin: 40px auto;
+}
+
+/* Lost password page */
+body.action-lost_password #content {
+  max-width: 500px;
+  margin: 40px auto;
+}
+
+
+/* ==========================================================================
+   4. ADMIN PAGES — Clean settings, tabs, vertical menu
+   ========================================================================== */
+
+/* Admin page body styling */
+body.controller-settings #content,
+body.controller-admin #content {
+  max-width: 100%;
+}
+
+/* Admin menu — vertical navigation */
+#admin-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#admin-menu li {
+  margin: 0;
+  padding: 0;
+}
+
+#admin-menu a {
+  display: block;
+  padding: 8px 16px;
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 400;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+#admin-menu a:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+#admin-menu a.selected,
+#admin-menu a.current {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Admin menu icons (Redmine uses background-image icons) */
+#admin-menu a.icon {
+  padding-left: 36px;
+  background-position: 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+}
+
+/* Admin tables — consistent clean styling */
+body.controller-admin table.list,
+body.controller-settings table.list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+
+body.controller-admin table.list th,
+body.controller-settings table.list th {
+  background: var(--bg-secondary);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-primary);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-align: left;
+}
+
+body.controller-admin table.list td,
+body.controller-settings table.list td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-secondary);
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+body.controller-admin table.list tr:hover td,
+body.controller-settings table.list tr:hover td {
+  background: var(--bg-secondary);
+}
+
+/* Settings tabs — horizontal, clean */
+.tabs,
+div.tabs {
+  list-style: none;
+  display: flex;
+  border-bottom: 1px solid var(--border-primary);
+  padding: 0;
+  margin: 0 0 20px 0;
+  background: transparent;
+}
+
+.tabs ul,
+div.tabs ul {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  border-bottom: none;
+}
+
+.tabs ul li,
+div.tabs ul li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tabs ul li a,
+div.tabs ul li a {
+  display: block;
+  padding: 8px 16px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  margin-bottom: -1px;
+}
+
+.tabs ul li a.selected,
+.tabs ul li a.current,
+div.tabs ul li a.selected,
+div.tabs ul li a.current {
+  color: var(--text-primary);
+  border-bottom-color: var(--bg-accent);
+  font-weight: 500;
+}
+
+.tabs ul li a:hover,
+div.tabs ul li a:hover {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+/* Settings form sections */
+fieldset {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin: 0 0 20px 0;
+}
+
+fieldset legend {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 0 8px;
+}
+
+/* Admin info boxes */
+.box {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+/* System information table (admin) */
+table.list.plugins td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+table.list.plugins td a {
+  font-weight: 500;
+  color: var(--bg-accent);
+}
+
+
+/* ==========================================================================
+   5. MY PAGE / DASHBOARD
+   ========================================================================== */
+
+/* My Page blocks */
+.mypage-box {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+/* Block handle — draggable header */
+.mypage-box .handle {
+  background: var(--bg-secondary);
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: move;
+  border-bottom: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mypage-box .handle a {
+  float: none;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 400;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.mypage-box .handle a:hover {
+  color: var(--bg-accent);
+}
+
+/* Block content area */
+.mypage-box .content,
+.mypage-box table {
+  font-size: 13px;
+}
+
+.mypage-box table.list {
+  margin: 0;
+  width: 100%;
+}
+
+.mypage-box table.list td {
+  padding: 6px 12px;
+}
+
+/* Block container layout */
+#block-container {
+  margin-bottom: 20px;
+}
+
+#list-top,
+#list-left,
+#list-right {
+  margin-bottom: 16px;
+}
+
+/* Generic box component */
+.box {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+/* My page select blocks dropdown */
+#block-select {
+  font-family: var(--font-family);
+  font-size: 13px;
+  padding: 6px 12px;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all 0.15s ease;
+}
+
+#block-select:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.12);
+  outline: none;
+}
+
+/* Activity/journal entries on My Page */
+.mypage-box .journal {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.mypage-box .journal:last-child {
+  border-bottom: none;
+}
+
+/* My page block links */
+.mypage-box h3 a {
+  color: var(--text-primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.mypage-box h3 a:hover {
+  color: var(--bg-accent);
+}
+
+
+/* ==========================================================================
+   6. GANTT CHART
+   ========================================================================== */
+
+/* Gantt header cells (date headers) */
+.gantt_hdr {
+  background: var(--bg-secondary);
+  font-size: 11px;
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--border-primary);
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Gantt subject names (left side) */
+.gantt_subjects {
+  background: var(--bg-primary);
+}
+
+.gantt_subjects a {
+  color: var(--text-primary);
+  font-size: 12px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.gantt_subjects a:hover {
+  color: var(--bg-accent);
+}
+
+/* Gantt selected period highlight */
+.gantt_selected_column {
+  background: var(--bg-accent-subtle);
+}
+
+/* Gantt task bars */
+.task_todo {
+  background: var(--bg-tertiary);
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.task_done {
+  background: var(--bg-accent);
+  height: 8px;
+  border-radius: 4px;
+}
+
+.task_late {
+  background: var(--status-red);
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* Milestones */
+.milestone {
+  background: var(--bg-accent);
+}
+
+/* Gantt today marker */
+.gantt_today_line {
+  border-left: 2px solid var(--status-red);
+}
+
+/* Gantt area grid lines */
+.gantt_area {
+  border-left: 1px solid var(--border-secondary);
+}
+
+.gantt_area .gantt_hdr {
+  border-right: 1px solid var(--border-secondary);
+}
+
+/* Gantt subject column */
+td.gantt_subjects_column {
+  border-right: 1px solid var(--border-primary);
+}
+
+/* Gantt container */
+#gantt_area {
+  overflow-x: auto;
+}
+
+/* Gantt tooltips */
+.gantt_tooltip {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+
+/* ==========================================================================
+   7. CALENDAR
+   ========================================================================== */
+
+table.cal {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+table.cal th {
+  background: var(--bg-secondary);
+  padding: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  border: 1px solid var(--border-primary);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+table.cal td {
+  padding: 4px 8px;
+  border: 1px solid var(--border-primary);
+  vertical-align: top;
+  height: 80px;
+  font-size: 12px;
+  background: var(--bg-primary);
+  transition: background 0.15s ease;
+}
+
+table.cal td:hover {
+  background: var(--bg-secondary);
+}
+
+table.cal td.odd {
+  background: var(--bg-secondary);
+}
+
+table.cal td.today {
+  background: var(--bg-accent-subtle);
+}
+
+table.cal td.today:hover {
+  background: var(--bg-accent-subtle);
+}
+
+table.cal td a {
+  font-size: 11px;
+  display: block;
+  color: var(--text-primary);
+  text-decoration: none;
+  padding: 1px 2px;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+table.cal td a:hover {
+  background: var(--bg-tertiary);
+  color: var(--bg-accent);
+}
+
+table.cal td p.day-num,
+table.cal td.day-num,
+table.cal td .day-num {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+table.cal td.today p.day-num,
+table.cal td.today .day-num {
+  color: var(--bg-accent);
+}
+
+/* Calendar navigation */
+table.cal + p,
+.calendar-nav {
+  text-align: center;
+  margin: 16px 0;
+}
+
+
+/* ==========================================================================
+   8. FORUMS / BOARDS
+   ========================================================================== */
+
+/* Boards listing table */
+table.boards {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.boards th {
+  background: var(--bg-secondary);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-primary);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-align: left;
+}
+
+table.boards td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-secondary);
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+table.boards tr:hover td {
+  background: var(--bg-secondary);
+}
+
+table.boards td.last-message {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Forum message / topic */
+.message .author {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.message .wiki {
+  margin-top: 8px;
+}
+
+/* Topic listing */
+div.topic {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+div.topic:last-child {
+  border-bottom: none;
+}
+
+div.topic h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+div.topic h3 a {
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+div.topic h3 a:hover {
+  color: var(--bg-accent);
+}
+
+div.topic .author {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Message replies */
+.message.reply {
+  margin-left: 24px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border-secondary);
+}
+
+/* Forum quick search */
+.boards .pagination {
+  margin: 16px 0;
+}
+
+/* Board description */
+table.boards td.description {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+
+/* ==========================================================================
+   9. FILES PAGE
+   ========================================================================== */
+
+/* Attachments list */
+.attachments,
+p.attachments {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.attachments li,
+p.attachments li,
+span.attachments li {
+  padding: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.attachments .icon,
+p.attachments .icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.attachments a,
+p.attachments a {
+  color: var(--text-primary);
+  font-size: 13px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.attachments a:hover,
+p.attachments a:hover {
+  color: var(--bg-accent);
+}
+
+.attachments .size,
+p.attachments .size {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.attachments .author,
+p.attachments .author {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* File description */
+.attachments .description {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* Delete attachment link */
+.attachments a.delete {
+  color: var(--text-tertiary);
+  font-size: 11px;
+  transition: all 0.15s ease;
+}
+
+.attachments a.delete:hover {
+  color: var(--status-red);
+}
+
+/* File upload area */
+.fileover {
+  background: var(--bg-accent-subtle);
+  border: 2px dashed var(--bg-accent);
+  border-radius: var(--radius-lg);
+}
+
+/* Uploaded file fields */
+span.attachments_fields input {
+  font-family: var(--font-family);
+  font-size: 13px;
+}
+
+/* Files container */
+.files table {
+  width: 100%;
+}
+
+.files table th {
+  background: var(--bg-secondary);
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-primary);
+  text-align: left;
+}
+
+.files table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-secondary);
+  font-size: 13px;
+}
+
+
+/* ==========================================================================
+   10. ROADMAP / VERSIONS
+   ========================================================================== */
+
+/* Version block */
+.version {
+  margin-bottom: 32px;
+}
+
+.version h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.version h3 a {
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.version h3 a:hover {
+  color: var(--bg-accent);
+}
+
+.version .wiki {
+  margin-bottom: 16px;
+}
+
+/* Version progress bar */
+.version table.progress,
+table.progress {
+  width: 100%;
+  height: 12px;
+  border: none;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  margin: 8px 0 4px;
+  border-collapse: collapse;
+}
+
+table.progress td {
+  padding: 0;
+  border: none;
+  height: 12px;
+}
+
+table.progress td.closed {
+  background: var(--bg-accent);
+}
+
+table.progress td.done {
+  background: var(--status-green);
+}
+
+table.progress td.open {
+  background: var(--bg-tertiary);
+}
+
+/* Progress info text */
+p.progress-info {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 4px 0 16px;
+}
+
+p.progress-info a {
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+p.progress-info a:hover {
+  color: var(--bg-accent);
+}
+
+/* Roadmap issue stats */
+.version .issues-stat {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+/* Version date info */
+.version .date,
+.version p.date {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+/* Versions list in roadmap */
+.roadmap .wiki {
+  font-size: 14px;
+}
+
+/* Incomplete versions link */
+.roadmap a.icon-package {
+  font-size: 13px;
+}
+
+
+/* ==========================================================================
+   11. TIME TRACKING / TIME ENTRIES
+   ========================================================================== */
+
+/* Time entries table */
+table.time-entries {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.time-entries th {
+  background: var(--bg-secondary);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-primary);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-align: left;
+}
+
+table.time-entries td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-secondary);
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+table.time-entries tr:hover td {
+  background: var(--bg-secondary);
+}
+
+/* Hours column — right aligned, bold */
+table.time-entries td.hours {
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+table.time-entries td.activity {
+  color: var(--text-secondary);
+}
+
+table.time-entries td.comments {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* Total hours display */
+.total-hours {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 16px 0;
+  line-height: 1.4;
+}
+
+.total-hours span.hours-int {
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.total-hours span.hours-dec {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Time entry form */
+.time_entry label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Report totals */
+table.time-entries tfoot td {
+  font-weight: 600;
+  border-top: 2px solid var(--border-primary);
+  background: var(--bg-secondary);
+}
+
+/* Time report group rows */
+table.time-entries tr.group td {
+  background: var(--bg-secondary);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+table.time-entries tr.group td a {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Report criteria links */
+.time-report .criteria {
+  font-size: 13px;
+}
+
+
+/* ==========================================================================
+   12. NEWS
+   ========================================================================== */
+
+/* News article */
+.news {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.news:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.news h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  line-height: 1.3;
+}
+
+.news h3 a {
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.news h3 a:hover {
+  color: var(--bg-accent);
+}
+
+.news .author {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.news .wiki {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-primary);
+}
+
+/* News comments */
+.news .replies {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+.news .replies a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.news .replies a:hover {
+  color: var(--bg-accent);
+}
+
+/* News summary on overview */
+.news.summary .description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+
+/* ==========================================================================
+   13. REPOSITORY / SOURCE BROWSER
+   ========================================================================== */
+
+/* File content display (source view) */
+table.filecontent {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.filecontent th.line-num,
+table.filecontent td.line-num {
+  color: var(--text-tertiary);
+  text-align: right;
+  padding-right: 16px;
+  border-right: 1px solid var(--border-primary);
+  user-select: none;
+  -webkit-user-select: none;
+  width: 50px;
+  min-width: 50px;
+  vertical-align: top;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+table.filecontent td.line-num a {
+  color: var(--text-tertiary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+table.filecontent td.line-num a:hover {
+  color: var(--bg-accent);
+}
+
+table.filecontent td.line-code,
+table.filecontent td.line_code {
+  padding-left: 16px;
+  white-space: pre;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  overflow-x: auto;
+}
+
+table.filecontent tr:hover {
+  background: var(--bg-secondary);
+}
+
+/* Changeset entry */
+.changeset {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.changeset:last-child {
+  border-bottom: none;
+}
+
+.changeset .author {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.changeset .change {
+  font-size: 13px;
+}
+
+/* Revision info header */
+.revision-info {
+  background: var(--bg-secondary);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  border: 1px solid var(--border-primary);
+  font-size: 13px;
+}
+
+.revision-info span.author {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* Directory/file entries in repository browser */
+.entry {
+  font-size: 13px;
+}
+
+.entry a {
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.entry a:hover {
+  color: var(--bg-accent);
+}
+
+.dir a,
+.file a {
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.dir a:hover,
+.file a:hover {
+  color: var(--bg-accent);
+}
+
+/* Repository browser table */
+table.browser {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.browser th {
+  background: var(--bg-secondary);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-primary);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: left;
+}
+
+table.browser td {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border-secondary);
+  font-size: 13px;
+}
+
+table.browser tr:hover td {
+  background: var(--bg-secondary);
+}
+
+/* Changeset table */
+table.changesets {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.changesets th {
+  background: var(--bg-secondary);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-primary);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: left;
+}
+
+table.changesets td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-secondary);
+  font-size: 13px;
+}
+
+table.changesets tr:hover td {
+  background: var(--bg-secondary);
+}
+
+table.changesets td.id {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+table.changesets td.comments {
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Diff view */
+.diff_out {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+}
+
+.diff_out span.diff_in {
+  background: var(--bg-tertiary);
+  padding: 1px 2px;
+}
+
+/* Diff addition / deletion */
+table.diff td.line-code.diff_in_added,
+.diff_out .diff_in_added {
+  background: #ECFDF5;
+}
+
+table.diff td.line-code.diff_in_removed,
+.diff_out .diff_in_removed {
+  background: #FEF2F2;
+}
+
+table.diff td.line-code.diff_in_modified,
+.diff_out .diff_in_modified {
+  background: #FFFBEB;
+}
+
+/* Repository statistics */
+.repository-stat {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+/* Revision graph (if present) */
+.revision-graph {
+  margin-bottom: 16px;
+}
+
+
+/* ==========================================================================
+   14. TOOLTIPS / HELP
+   ========================================================================== */
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  cursor: help;
+}
+
+.tooltip .tip,
+.tooltip span.tip {
+  display: none;
+  position: absolute;
+  z-index: 1000;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 8px 12px;
+  font-size: 12px;
+  max-width: 300px;
+  color: var(--text-primary);
+  line-height: 1.5;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.tooltip:hover .tip,
+.tooltip:hover span.tip {
+  display: block;
+}
+
+/* Standalone tip / info box */
+.tip,
+p.tip,
+div.tip {
+  background: var(--bg-secondary);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--bg-accent);
+  font-size: 13px;
+  margin-bottom: 16px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.tip a {
+  color: var(--bg-accent);
+}
+
+/* Warning tip */
+.warning,
+p.warning,
+div.warning {
+  background: #FFFBEB;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--status-yellow);
+  font-size: 13px;
+  margin-bottom: 16px;
+  color: #92400E;
+  line-height: 1.5;
+}
+
+/* Inline help text */
+em.info,
+span.info {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-style: normal;
+  display: block;
+  margin-top: 4px;
+}
+
+/* Help icons */
+a.help,
+span.help {
+  color: var(--text-tertiary);
+  cursor: help;
+  transition: all 0.15s ease;
+}
+
+a.help:hover,
+span.help:hover {
+  color: var(--bg-accent);
+}
+
+
+/* ==========================================================================
+   ADDITIONAL OVERRIDES — Utility styles for special pages
+   ========================================================================== */
+
+/* ---- Pagination ---- */
+ul.pages,
+.pagination ul.pages {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  margin: 0;
+}
+
+ul.pages li {
+  margin: 0;
+}
+
+ul.pages li a,
+ul.pages li span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+ul.pages li a {
+  color: var(--text-secondary);
+  background: transparent;
+}
+
+ul.pages li a:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+ul.pages li span.current {
+  background: var(--bg-accent);
+  color: var(--text-on-accent);
+  font-weight: 600;
+}
+
+ul.pages li.previous a,
+ul.pages li.next a {
+  color: var(--text-secondary);
+}
+
+ul.pages li.previous a:hover,
+ul.pages li.next a:hover {
+  color: var(--text-primary);
+}
+
+/* ---- Per-page selector ---- */
+.per-page-options {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.per-page-options a {
+  color: var(--text-secondary);
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.per-page-options a:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.per-page-options a.selected {
+  background: var(--bg-accent);
+  color: var(--text-on-accent);
+  font-weight: 500;
+}
+
+/* ---- Activity / history page ---- */
+#activity {
+  font-size: 13px;
+}
+
+#activity h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 24px 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+#activity dt {
+  font-weight: 600;
+  margin: 0;
+  padding: 8px 0 2px;
+}
+
+#activity dt a {
+  color: var(--text-primary);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+#activity dt a:hover {
+  color: var(--bg-accent);
+}
+
+#activity dd {
+  margin: 0 0 8px 0;
+  padding: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+#activity dd span.description {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+#activity dd .author {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+/* ---- Search page ---- */
+#search-results {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#search-results li {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+#search-results li:last-child {
+  border-bottom: none;
+}
+
+#search-results dt {
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+#search-results dt a {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+#search-results dt a:hover {
+  color: var(--bg-accent);
+}
+
+#search-results dd {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+#search-results dd span.description {
+  display: block;
+  color: var(--text-secondary);
+}
+
+/* Search highlight */
+#search-results span.highlight,
+.wiki span.highlight {
+  background: #FEF3C7;
+  padding: 1px 3px;
+  border-radius: 2px;
+  color: #92400E;
+}
+
+/* Search form */
+#search-form input[type="text"] {
+  font-family: var(--font-family);
+  font-size: 14px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  width: 400px;
+  max-width: 100%;
+  transition: all 0.15s ease;
+}
+
+#search-form input[type="text"]:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.12);
+  outline: none;
+}
+
+/* Search type checkboxes */
+#search-form .search-type {
+  margin: 12px 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+#search-form .search-type label {
+  margin-right: 16px;
+  cursor: pointer;
+}
+
+#search-form .search-type input[type="checkbox"] {
+  margin-right: 4px;
+  accent-color: var(--bg-accent);
+}
+
+/* ---- Overview page ---- */
+.overview .splitcontent {
+  display: flex;
+  gap: 24px;
+}
+
+.overview .splitcontentleft {
+  flex: 1;
+  padding-right: 0;
+}
+
+.overview .splitcontentright {
+  flex: 1;
+  padding-left: 0;
+}
+
+/* Members box on overview */
+.members {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.members li {
+  padding: 4px 0;
+  font-size: 13px;
+}
+
+.members li a {
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.members li a:hover {
+  color: var(--bg-accent);
+}
+
+/* ---- Gravatar / Avatar styling ---- */
+img.gravatar {
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+/* ---- Text formatting toolbar ---- */
+.jstEditor textarea {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  border: 1px solid var(--border-primary);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  padding: 12px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: border-color 0.15s ease;
+}
+
+.jstEditor textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.12);
+  outline: none;
+}
+
+/* ---- Autoscroll / loading indicators ---- */
+.autoscroll {
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+/* ---- Print styles ---- */
+@media print {
+  #top-menu,
+  #header,
+  #main-menu,
+  #sidebar,
+  #footer,
+  .contextual,
+  .other-formats {
+    display: none;
+  }
+
+  #content {
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+  }
+
+  body {
+    background: white;
+    color: black;
+    font-size: 12px;
+  }
+
+  div.wiki {
+    max-width: 100%;
+  }
+
+  a {
+    color: black;
+    text-decoration: underline;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  table th,
+  table td {
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+  }
+}
+
+/* ---- Sortable columns ---- */
+table.list thead th.sort {
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+table.list thead th.sort:hover {
+  background: var(--bg-tertiary);
+}
+
+table.list thead th.sort.asc::after {
+  content: " \2191";
+  font-size: 10px;
+  color: var(--text-tertiary);
+}
+
+table.list thead th.sort.desc::after {
+  content: " \2193";
+  font-size: 10px;
+  color: var(--text-tertiary);
+}
+
+/* ---- Collapsible fieldsets ---- */
+fieldset.collapsible {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+}
+
+fieldset.collapsible legend {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.15s ease;
+}
+
+fieldset.collapsible legend:hover {
+  color: var(--bg-accent);
+}
+
+fieldset.collapsible.collapsed {
+  border-color: var(--border-secondary);
+}
+
+/* ---- Optgroup styling in selects ---- */
+optgroup {
+  font-family: var(--font-family);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+optgroup option {
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+/* ---- Other formats links (Atom, CSV, PDF) ---- */
+.other-formats {
+  margin: 20px 0;
+  font-size: 12px;
+}
+
+.other-formats span {
+  margin-right: 8px;
+}
+
+.other-formats span a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.other-formats span a:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+/* ---- Watchers section ---- */
+.watchers {
+  font-size: 13px;
+}
+
+.watchers ul {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0;
+}
+
+.watchers ul li {
+  padding: 2px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.watchers ul li a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.15s ease;
+}
+
+.watchers ul li a:hover {
+  color: var(--bg-accent);
+}
+
+.watchers ul li a.delete {
+  color: var(--text-tertiary);
+  font-size: 11px;
+}
+
+.watchers ul li a.delete:hover {
+  color: var(--status-red);
+}
+
+/* ---- Documents page ---- */
+.documents h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.documents .author {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.documents .wiki {
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+/* ---- Workflow / Tracker admin ---- */
+table.fields_permissions td,
+table.fields_permissions th {
+  padding: 6px 8px;
+  font-size: 12px;
+  text-align: center;
+}
+
+table.fields_permissions th {
+  background: var(--bg-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---- Drag handle indicators ---- */
+.sort-handle,
+.handle {
+  cursor: move;
+}
+
+.ui-sortable-placeholder {
+  background: var(--bg-accent-subtle);
+  border: 2px dashed var(--bg-accent);
+  border-radius: var(--radius-md);
+  visibility: visible;
+}
+
+/* ---- Inline editing ---- */
+.inplace-edit input[type="text"] {
+  font-family: var(--font-family);
+  font-size: 13px;
+  padding: 4px 8px;
+  border: 1px solid var(--border-focus);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.12);
+  outline: none;
+}
+
+/* ---- Auto-complete dropdown ---- */
+.autocomplete {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.autocomplete ul {
+  list-style: none;
+  padding: 4px;
+  margin: 0;
+}
+
+.autocomplete ul li {
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.autocomplete ul li:hover,
+.autocomplete ul li.selected {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* ---- Queries / Saved filters ---- */
+.query-columns {
+  font-size: 13px;
+}
+
+.query-columns label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+.query-columns select {
+  font-family: var(--font-family);
+  font-size: 13px;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding: 6px 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* ---- Error explanation (form validation) ---- */
+#errorExplanation,
+div.errorExplanation {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  color: #991B1B;
+}
+
+#errorExplanation h2,
+div.errorExplanation h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: #991B1B;
+}
+
+#errorExplanation ul,
+div.errorExplanation ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+#errorExplanation ul li,
+div.errorExplanation ul li {
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: #991B1B;
+}
+
+/* ---- Loading indicator ---- */
+#ajax-indicator {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 12px 20px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+#ajax-indicator span {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+/* ==========================================================================
+   WS Redmine Theme — Part 4: Dark Mode, Context Menus, Modals, Responsive
+   Linear.app-inspired design
+   ========================================================================== */
+
+
+/* ==========================================================================
+   SECTION 1: DARK MODE VARIABLES — @media (prefers-color-scheme: dark)
+   Overrides ALL :root variables defined in Part 1 for system-level dark mode.
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Background colors */
+    --bg-primary: #1C1C1E;
+    --bg-secondary: #151517;
+    --bg-tertiary: #242428;
+    --bg-accent: #5E6AD2;
+    --bg-accent-hover: #6E7AE2;
+    --bg-accent-subtle: #252640;
+
+    /* Text colors */
+    --text-primary: #EDEDEF;
+    --text-secondary: #8A8F98;
+    --text-tertiary: #5A5E66;
+    --text-on-accent: #FFFFFF;
+
+    /* Borders */
+    --border-primary: #2E2E32;
+    --border-secondary: #232326;
+    --border-focus: #5E6AD2;
+
+    /* Shadows — stronger for dark mode */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+    /* Status colors — same hues, no change needed */
+    --status-green: #4CAF50;
+    --status-yellow: #F59E0B;
+    --status-red: #EF4444;
+    --status-blue: #3B82F6;
+    --status-orange: #F97316;
+
+    /* Priority colors — same hues */
+    --priority-urgent: #EF4444;
+    --priority-high: #F97316;
+    --priority-normal: #8A8F98;
+    --priority-low: #5A5E66;
+  }
+}
+
+
+/* ==========================================================================
+   SECTION 2: MANUAL DARK MODE TOGGLE CLASS
+   Same dark variables applied via body.theme-ws-dark for JavaScript toggle.
+   ========================================================================== */
+
+body.theme-ws-dark {
+  /* Background colors */
+  --bg-primary: #1C1C1E;
+  --bg-secondary: #151517;
+  --bg-tertiary: #242428;
+  --bg-accent: #5E6AD2;
+  --bg-accent-hover: #6E7AE2;
+  --bg-accent-subtle: #252640;
+
+  /* Text colors */
+  --text-primary: #EDEDEF;
+  --text-secondary: #8A8F98;
+  --text-tertiary: #5A5E66;
+  --text-on-accent: #FFFFFF;
+
+  /* Borders */
+  --border-primary: #2E2E32;
+  --border-secondary: #232326;
+  --border-focus: #5E6AD2;
+
+  /* Shadows — stronger for dark mode */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+  /* Status colors */
+  --status-green: #4CAF50;
+  --status-yellow: #F59E0B;
+  --status-red: #EF4444;
+  --status-blue: #3B82F6;
+  --status-orange: #F97316;
+
+  /* Priority colors */
+  --priority-urgent: #EF4444;
+  --priority-high: #F97316;
+  --priority-normal: #8A8F98;
+  --priority-low: #5A5E66;
+}
+
+
+/* ==========================================================================
+   SECTION 3: DARK MODE COMPONENT-SPECIFIC OVERRIDES
+   Elements that need explicit dark mode fixes beyond CSS variable swaps.
+   Each block is duplicated for both @media and .theme-ws-dark.
+   ========================================================================== */
+
+/* ---------- 3a. Flash Messages — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  #flash_notice {
+    background: #0D3320;
+    border-color: #166534;
+    color: #86EFAC;
+  }
+
+  #flash_error {
+    background: #3B0D0D;
+    border-color: #991B1B;
+    color: #FCA5A5;
+  }
+
+  #flash_warning {
+    background: #3B2C06;
+    border-color: #92400E;
+    color: #FDE68A;
+  }
+}
+
+body.theme-ws-dark #flash_notice {
+  background: #0D3320;
+  border-color: #166534;
+  color: #86EFAC;
+}
+
+body.theme-ws-dark #flash_error {
+  background: #3B0D0D;
+  border-color: #991B1B;
+  color: #FCA5A5;
+}
+
+body.theme-ws-dark #flash_warning {
+  background: #3B2C06;
+  border-color: #92400E;
+  color: #FDE68A;
+}
+
+
+/* ---------- 3b. Login Form — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  #login-form {
+    background: var(--bg-secondary);
+    border-color: var(--border-primary);
+    box-shadow: var(--shadow-lg);
+  }
+
+  #login-form label {
+    color: var(--text-secondary);
+  }
+
+  #login-form input[type="text"],
+  #login-form input[type="password"] {
+    background: var(--bg-tertiary);
+    border-color: var(--border-primary);
+    color: var(--text-primary);
+  }
+
+  #login-form input[type="text"]:focus,
+  #login-form input[type="password"]:focus {
+    border-color: var(--border-focus);
+    background: var(--bg-primary);
+  }
+
+  #login-form a {
+    color: var(--bg-accent);
+  }
+}
+
+body.theme-ws-dark #login-form {
+  background: var(--bg-secondary);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+body.theme-ws-dark #login-form label {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark #login-form input[type="text"],
+body.theme-ws-dark #login-form input[type="password"] {
+  background: var(--bg-tertiary);
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark #login-form input[type="text"]:focus,
+body.theme-ws-dark #login-form input[type="password"]:focus {
+  border-color: var(--border-focus);
+  background: var(--bg-primary);
+}
+
+body.theme-ws-dark #login-form a {
+  color: var(--bg-accent);
+}
+
+
+/* ---------- 3c. Gravatar / Avatar — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  img.gravatar {
+    border-color: var(--border-primary);
+    box-shadow: 0 0 0 1px var(--border-secondary);
+  }
+}
+
+body.theme-ws-dark img.gravatar {
+  border-color: var(--border-primary);
+  box-shadow: 0 0 0 1px var(--border-secondary);
+}
+
+
+/* ---------- 3d. Select Dropdown Arrow — Dark Mode ---------- */
+/* SVG arrow needs to be light-colored against dark background */
+
+@media (prefers-color-scheme: dark) {
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238A8F98' d='M6 8.825L1.175 4l.825-.825L6 7.175 10 3.175l.825.825z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 12px;
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--border-primary);
+  }
+}
+
+body.theme-ws-dark select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238A8F98' d='M6 8.825L1.175 4l.825-.825L6 7.175 10 3.175l.825.825z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+
+/* ---------- 3e. Code Blocks — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  .wiki pre,
+  pre,
+  code,
+  .wiki code {
+    background: #1A1A1C;
+    color: #D4D4D8;
+    border-color: var(--border-primary);
+  }
+
+  .wiki pre code,
+  pre code {
+    background: transparent;
+    color: inherit;
+  }
+
+  /* Syntax highlighting adjustments for dark mode */
+  .syntaxhl .normal { color: #D4D4D8; }
+  .syntaxhl .comment { color: #6A737D; }
+  .syntaxhl .string { color: #A5D6FF; }
+  .syntaxhl .keyword { color: #C792EA; }
+  .syntaxhl .number { color: #F78C6C; }
+  .syntaxhl .type { color: #82AAFF; }
+
+  /* Inline code */
+  .wiki code,
+  p code,
+  li code,
+  td code {
+    background: #2A2A2E;
+    color: #E2B3FF;
+    border-color: var(--border-primary);
+  }
+}
+
+body.theme-ws-dark .wiki pre,
+body.theme-ws-dark pre,
+body.theme-ws-dark code,
+body.theme-ws-dark .wiki code {
+  background: #1A1A1C;
+  color: #D4D4D8;
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark .wiki pre code,
+body.theme-ws-dark pre code {
+  background: transparent;
+  color: inherit;
+}
+
+body.theme-ws-dark .syntaxhl .normal { color: #D4D4D8; }
+body.theme-ws-dark .syntaxhl .comment { color: #6A737D; }
+body.theme-ws-dark .syntaxhl .string { color: #A5D6FF; }
+body.theme-ws-dark .syntaxhl .keyword { color: #C792EA; }
+body.theme-ws-dark .syntaxhl .number { color: #F78C6C; }
+body.theme-ws-dark .syntaxhl .type { color: #82AAFF; }
+
+body.theme-ws-dark .wiki code,
+body.theme-ws-dark p code,
+body.theme-ws-dark li code,
+body.theme-ws-dark td code {
+  background: #2A2A2E;
+  color: #E2B3FF;
+  border-color: var(--border-primary);
+}
+
+
+/* ---------- 3f. Calendar — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  table.cal {
+    border-color: var(--border-primary);
+  }
+
+  table.cal th {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border-color: var(--border-primary);
+  }
+
+  table.cal td {
+    background: var(--bg-primary);
+    border-color: var(--border-primary);
+    color: var(--text-primary);
+  }
+
+  table.cal td.today {
+    background: var(--bg-accent-subtle);
+    border-color: var(--bg-accent);
+  }
+
+  table.cal td.odd {
+    background: var(--bg-secondary);
+  }
+
+  table.cal td.nwday {
+    background: var(--bg-tertiary);
+  }
+
+  table.cal td p.day-num {
+    color: var(--text-secondary);
+  }
+
+  table.cal td.today p.day-num {
+    color: var(--bg-accent);
+    font-weight: 600;
+  }
+
+  table.cal td a {
+    color: var(--bg-accent);
+  }
+}
+
+body.theme-ws-dark table.cal {
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark table.cal th {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark table.cal td {
+  background: var(--bg-primary);
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark table.cal td.today {
+  background: var(--bg-accent-subtle);
+  border-color: var(--bg-accent);
+}
+
+body.theme-ws-dark table.cal td.odd {
+  background: var(--bg-secondary);
+}
+
+body.theme-ws-dark table.cal td.nwday {
+  background: var(--bg-tertiary);
+}
+
+body.theme-ws-dark table.cal td p.day-num {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark table.cal td.today p.day-num {
+  color: var(--bg-accent);
+  font-weight: 600;
+}
+
+body.theme-ws-dark table.cal td a {
+  color: var(--bg-accent);
+}
+
+
+/* ---------- 3g. Gantt Chart — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  .gantt_hdr {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border-color: var(--border-primary);
+  }
+
+  .gantt_hdr.nwday {
+    background: var(--bg-tertiary);
+  }
+
+  .gantt_subjects {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  .gantt_subjects a {
+    color: var(--text-primary);
+  }
+
+  .gantt_subjects a:hover {
+    color: var(--bg-accent);
+  }
+
+  table.gantt td {
+    border-color: var(--border-secondary);
+  }
+
+  table.gantt td.nwday {
+    background: #1A1A1C;
+  }
+
+  table.gantt td.today {
+    background: var(--bg-accent-subtle);
+  }
+
+  .task_late {
+    background: #7F1D1D;
+  }
+
+  .task_done {
+    background: #166534;
+  }
+
+  .task_todo {
+    background: var(--bg-accent);
+  }
+
+  .milestone {
+    border-color: var(--text-secondary);
+  }
+}
+
+body.theme-ws-dark .gantt_hdr {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark .gantt_hdr.nwday {
+  background: var(--bg-tertiary);
+}
+
+body.theme-ws-dark .gantt_subjects {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark .gantt_subjects a {
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark .gantt_subjects a:hover {
+  color: var(--bg-accent);
+}
+
+body.theme-ws-dark table.gantt td {
+  border-color: var(--border-secondary);
+}
+
+body.theme-ws-dark table.gantt td.nwday {
+  background: #1A1A1C;
+}
+
+body.theme-ws-dark table.gantt td.today {
+  background: var(--bg-accent-subtle);
+}
+
+body.theme-ws-dark .task_late {
+  background: #7F1D1D;
+}
+
+body.theme-ws-dark .task_done {
+  background: #166534;
+}
+
+body.theme-ws-dark .task_todo {
+  background: var(--bg-accent);
+}
+
+body.theme-ws-dark .milestone {
+  border-color: var(--text-secondary);
+}
+
+
+/* ---------- 3h. Input Autofill Override — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px var(--bg-primary) inset;
+    -webkit-text-fill-color: var(--text-primary);
+    border-color: var(--border-primary);
+    transition: background-color 5000s ease-in-out 0s;
+  }
+}
+
+body.theme-ws-dark input:-webkit-autofill,
+body.theme-ws-dark input:-webkit-autofill:hover,
+body.theme-ws-dark input:-webkit-autofill:focus,
+body.theme-ws-dark input:-webkit-autofill:active,
+body.theme-ws-dark textarea:-webkit-autofill,
+body.theme-ws-dark select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-primary) inset;
+  -webkit-text-fill-color: var(--text-primary);
+  border-color: var(--border-primary);
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+
+/* ---------- 3i. Tables — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  table.list thead th,
+  table.issues thead th {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border-color: var(--border-primary);
+  }
+
+  table.list tbody td,
+  table.issues tbody td {
+    border-color: var(--border-secondary);
+    color: var(--text-primary);
+  }
+
+  table.list tbody tr:hover,
+  table.issues tbody tr:hover {
+    background: var(--bg-tertiary);
+  }
+
+  table.list tbody tr.odd,
+  table.issues tbody tr.odd {
+    background: var(--bg-secondary);
+  }
+
+  table.list tbody tr.even,
+  table.issues tbody tr.even {
+    background: var(--bg-primary);
+  }
+
+  table.list tbody tr.odd:hover,
+  table.issues tbody tr.odd:hover,
+  table.list tbody tr.even:hover,
+  table.issues tbody tr.even:hover {
+    background: var(--bg-tertiary);
+  }
+
+  /* Issue priority coloring in dark mode — slightly desaturated */
+  tr.issue.priority-highest td.priority,
+  tr.issue.priority-urgent td.priority {
+    color: #FCA5A5;
+  }
+
+  tr.issue.priority-high td.priority {
+    color: #FDBA74;
+  }
+
+  tr.issue.priority-low td.priority,
+  tr.issue.priority-lowest td.priority {
+    color: var(--text-tertiary);
+  }
+
+  /* Closed issues */
+  tr.issue.closed td,
+  tr.issue.closed a {
+    color: var(--text-tertiary);
+  }
+
+  /* Checkbox column */
+  table.list td.checkbox input[type="checkbox"] {
+    accent-color: var(--bg-accent);
+  }
+}
+
+body.theme-ws-dark table.list thead th,
+body.theme-ws-dark table.issues thead th {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark table.list tbody td,
+body.theme-ws-dark table.issues tbody td {
+  border-color: var(--border-secondary);
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark table.list tbody tr:hover,
+body.theme-ws-dark table.issues tbody tr:hover {
+  background: var(--bg-tertiary);
+}
+
+body.theme-ws-dark table.list tbody tr.odd,
+body.theme-ws-dark table.issues tbody tr.odd {
+  background: var(--bg-secondary);
+}
+
+body.theme-ws-dark table.list tbody tr.even,
+body.theme-ws-dark table.issues tbody tr.even {
+  background: var(--bg-primary);
+}
+
+body.theme-ws-dark table.list tbody tr.odd:hover,
+body.theme-ws-dark table.issues tbody tr.odd:hover,
+body.theme-ws-dark table.list tbody tr.even:hover,
+body.theme-ws-dark table.issues tbody tr.even:hover {
+  background: var(--bg-tertiary);
+}
+
+body.theme-ws-dark tr.issue.priority-highest td.priority,
+body.theme-ws-dark tr.issue.priority-urgent td.priority {
+  color: #FCA5A5;
+}
+
+body.theme-ws-dark tr.issue.priority-high td.priority {
+  color: #FDBA74;
+}
+
+body.theme-ws-dark tr.issue.priority-low td.priority,
+body.theme-ws-dark tr.issue.priority-lowest td.priority {
+  color: var(--text-tertiary);
+}
+
+body.theme-ws-dark tr.issue.closed td,
+body.theme-ws-dark tr.issue.closed a {
+  color: var(--text-tertiary);
+}
+
+body.theme-ws-dark table.list td.checkbox input[type="checkbox"] {
+  accent-color: var(--bg-accent);
+}
+
+
+/* ---------- 3j. Wiki — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  div.wiki {
+    color: var(--text-primary);
+  }
+
+  div.wiki h1,
+  div.wiki h2,
+  div.wiki h3,
+  div.wiki h4,
+  div.wiki h5,
+  div.wiki h6 {
+    color: var(--text-primary);
+    border-bottom-color: var(--border-primary);
+  }
+
+  div.wiki a {
+    color: var(--bg-accent);
+  }
+
+  div.wiki a:hover {
+    color: var(--bg-accent-hover);
+  }
+
+  div.wiki blockquote {
+    border-left-color: var(--border-primary);
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+  }
+
+  div.wiki table {
+    border-color: var(--border-primary);
+  }
+
+  div.wiki table th {
+    background: var(--bg-secondary);
+    border-color: var(--border-primary);
+    color: var(--text-secondary);
+  }
+
+  div.wiki table td {
+    border-color: var(--border-primary);
+    color: var(--text-primary);
+  }
+
+  div.wiki hr {
+    border-color: var(--border-primary);
+  }
+
+  div.wiki img {
+    border-color: var(--border-primary);
+  }
+}
+
+body.theme-ws-dark div.wiki {
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark div.wiki h1,
+body.theme-ws-dark div.wiki h2,
+body.theme-ws-dark div.wiki h3,
+body.theme-ws-dark div.wiki h4,
+body.theme-ws-dark div.wiki h5,
+body.theme-ws-dark div.wiki h6 {
+  color: var(--text-primary);
+  border-bottom-color: var(--border-primary);
+}
+
+body.theme-ws-dark div.wiki a {
+  color: var(--bg-accent);
+}
+
+body.theme-ws-dark div.wiki a:hover {
+  color: var(--bg-accent-hover);
+}
+
+body.theme-ws-dark div.wiki blockquote {
+  border-left-color: var(--border-primary);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark div.wiki table {
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark div.wiki table th {
+  background: var(--bg-secondary);
+  border-color: var(--border-primary);
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark div.wiki table td {
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark div.wiki hr {
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark div.wiki img {
+  border-color: var(--border-primary);
+}
+
+
+/* ---------- 3k. Issue Detail — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  .issue .details {
+    border-color: var(--border-primary);
+  }
+
+  .issue .attributes {
+    background: var(--bg-secondary);
+    border-color: var(--border-primary);
+  }
+
+  .issue .attribute .label {
+    color: var(--text-secondary);
+  }
+
+  .issue .attribute .value {
+    color: var(--text-primary);
+  }
+
+  /* Issue journals / history */
+  #history .journal {
+    border-color: var(--border-primary);
+  }
+
+  #history .journal .wiki {
+    color: var(--text-primary);
+  }
+
+  #history .journal h4 {
+    color: var(--text-secondary);
+  }
+
+  #history .journal .details {
+    color: var(--text-secondary);
+  }
+
+  /* Related issues */
+  .issues-related table td {
+    border-color: var(--border-secondary);
+  }
+
+  /* Changesets */
+  .changeset .changes td {
+    border-color: var(--border-secondary);
+  }
+}
+
+body.theme-ws-dark .issue .details {
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark .issue .attributes {
+  background: var(--bg-secondary);
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark .issue .attribute .label {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark .issue .attribute .value {
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark #history .journal {
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark #history .journal .wiki {
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark #history .journal h4 {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark #history .journal .details {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark .issues-related table td {
+  border-color: var(--border-secondary);
+}
+
+body.theme-ws-dark .changeset .changes td {
+  border-color: var(--border-secondary);
+}
+
+
+/* ---------- 3l. My Page Boxes — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  .mypage-box {
+    background: var(--bg-secondary);
+    border-color: var(--border-primary);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .mypage-box .handle {
+    color: var(--text-tertiary);
+  }
+
+  #block-container .mypage-box h3 {
+    color: var(--text-primary);
+    border-bottom-color: var(--border-primary);
+  }
+}
+
+body.theme-ws-dark .mypage-box {
+  background: var(--bg-secondary);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+body.theme-ws-dark .mypage-box .handle {
+  color: var(--text-tertiary);
+}
+
+body.theme-ws-dark #block-container .mypage-box h3 {
+  color: var(--text-primary);
+  border-bottom-color: var(--border-primary);
+}
+
+
+/* ---------- 3m. Form Elements — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="url"],
+  input[type="number"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="date"],
+  input[type="datetime-local"],
+  input[type="time"],
+  textarea {
+    background: var(--bg-tertiary);
+    border-color: var(--border-primary);
+    color: var(--text-primary);
+  }
+
+  input[type="text"]::placeholder,
+  input[type="password"]::placeholder,
+  input[type="email"]::placeholder,
+  input[type="url"]::placeholder,
+  input[type="number"]::placeholder,
+  input[type="search"]::placeholder,
+  textarea::placeholder {
+    color: var(--text-tertiary);
+  }
+
+  input[type="text"]:focus,
+  input[type="password"]:focus,
+  input[type="email"]:focus,
+  input[type="url"]:focus,
+  input[type="number"]:focus,
+  input[type="search"]:focus,
+  input[type="tel"]:focus,
+  input[type="date"]:focus,
+  input[type="datetime-local"]:focus,
+  input[type="time"]:focus,
+  textarea:focus {
+    border-color: var(--border-focus);
+    background: var(--bg-primary);
+    box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.2);
+  }
+
+  /* Disabled inputs */
+  input:disabled,
+  textarea:disabled,
+  select:disabled {
+    background: var(--bg-secondary);
+    color: var(--text-tertiary);
+    border-color: var(--border-secondary);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  /* Read-only inputs */
+  input:read-only,
+  textarea:read-only {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+  }
+
+  /* Fieldset */
+  fieldset {
+    border-color: var(--border-primary);
+  }
+
+  fieldset legend {
+    color: var(--text-primary);
+  }
+
+  /* Tabular form labels */
+  .tabular label {
+    color: var(--text-secondary);
+  }
+
+  .tabular p {
+    border-bottom-color: var(--border-secondary);
+  }
+
+  /* Checkbox and radio */
+  input[type="checkbox"],
+  input[type="radio"] {
+    accent-color: var(--bg-accent);
+  }
+}
+
+body.theme-ws-dark input[type="text"],
+body.theme-ws-dark input[type="password"],
+body.theme-ws-dark input[type="email"],
+body.theme-ws-dark input[type="url"],
+body.theme-ws-dark input[type="number"],
+body.theme-ws-dark input[type="search"],
+body.theme-ws-dark input[type="tel"],
+body.theme-ws-dark input[type="date"],
+body.theme-ws-dark input[type="datetime-local"],
+body.theme-ws-dark input[type="time"],
+body.theme-ws-dark textarea {
+  background: var(--bg-tertiary);
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark input[type="text"]::placeholder,
+body.theme-ws-dark input[type="password"]::placeholder,
+body.theme-ws-dark input[type="email"]::placeholder,
+body.theme-ws-dark input[type="url"]::placeholder,
+body.theme-ws-dark input[type="number"]::placeholder,
+body.theme-ws-dark input[type="search"]::placeholder,
+body.theme-ws-dark textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+body.theme-ws-dark input[type="text"]:focus,
+body.theme-ws-dark input[type="password"]:focus,
+body.theme-ws-dark input[type="email"]:focus,
+body.theme-ws-dark input[type="url"]:focus,
+body.theme-ws-dark input[type="number"]:focus,
+body.theme-ws-dark input[type="search"]:focus,
+body.theme-ws-dark input[type="tel"]:focus,
+body.theme-ws-dark input[type="date"]:focus,
+body.theme-ws-dark input[type="datetime-local"]:focus,
+body.theme-ws-dark input[type="time"]:focus,
+body.theme-ws-dark textarea:focus {
+  border-color: var(--border-focus);
+  background: var(--bg-primary);
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.2);
+}
+
+body.theme-ws-dark input:disabled,
+body.theme-ws-dark textarea:disabled,
+body.theme-ws-dark select:disabled {
+  background: var(--bg-secondary);
+  color: var(--text-tertiary);
+  border-color: var(--border-secondary);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+body.theme-ws-dark input:read-only,
+body.theme-ws-dark textarea:read-only {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark fieldset {
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark fieldset legend {
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark .tabular label {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark .tabular p {
+  border-bottom-color: var(--border-secondary);
+}
+
+body.theme-ws-dark input[type="checkbox"],
+body.theme-ws-dark input[type="radio"] {
+  accent-color: var(--bg-accent);
+}
+
+
+/* ---------- 3n. Buttons — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  /* Secondary buttons get dark treatment */
+  a.button,
+  input[type="button"],
+  button:not([type="submit"]) {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--border-primary);
+  }
+
+  a.button:hover,
+  input[type="button"]:hover,
+  button:not([type="submit"]):hover {
+    background: #2E2E34;
+    border-color: var(--border-primary);
+  }
+
+  /* Ensure primary submit buttons keep accent */
+  input[type="submit"] {
+    background: var(--bg-accent);
+    color: var(--text-on-accent);
+    border-color: transparent;
+  }
+
+  input[type="submit"]:hover {
+    background: var(--bg-accent-hover);
+  }
+}
+
+body.theme-ws-dark a.button,
+body.theme-ws-dark input[type="button"],
+body.theme-ws-dark button:not([type="submit"]) {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark a.button:hover,
+body.theme-ws-dark input[type="button"]:hover,
+body.theme-ws-dark button:not([type="submit"]):hover {
+  background: #2E2E34;
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark input[type="submit"] {
+  background: var(--bg-accent);
+  color: var(--text-on-accent);
+  border-color: transparent;
+}
+
+body.theme-ws-dark input[type="submit"]:hover {
+  background: var(--bg-accent-hover);
+}
+
+
+/* ---------- 3o. Pagination — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  p.pagination span.current {
+    background: var(--bg-accent);
+    color: var(--text-on-accent);
+  }
+
+  p.pagination a {
+    color: var(--text-secondary);
+    border-color: var(--border-primary);
+  }
+
+  p.pagination a:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+}
+
+body.theme-ws-dark p.pagination span.current {
+  background: var(--bg-accent);
+  color: var(--text-on-accent);
+}
+
+body.theme-ws-dark p.pagination a {
+  color: var(--text-secondary);
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark p.pagination a:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+
+/* ---------- 3p. Tooltip / Title Attribute — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  .tooltip .tip {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+body.theme-ws-dark .tooltip .tip {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  box-shadow: var(--shadow-md);
+}
+
+
+/* ---------- 3q. Admin Pages — Dark Mode ---------- */
+
+@media (prefers-color-scheme: dark) {
+  .admin-menu ul li a {
+    color: var(--text-secondary);
+    border-bottom-color: var(--border-secondary);
+  }
+
+  .admin-menu ul li a:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+
+  .admin-menu ul li a.selected {
+    background: var(--bg-accent-subtle);
+    color: var(--bg-accent);
+  }
+
+  /* Settings tabs */
+  #tab-content-general,
+  #tab-content-display,
+  #tab-content-authentication,
+  #tab-content-projects,
+  #tab-content-users,
+  #tab-content-issues,
+  #tab-content-notifications,
+  #tab-content-mail_handler,
+  #tab-content-repositories,
+  .tab-content {
+    background: var(--bg-primary);
+    border-color: var(--border-primary);
+  }
+
+  /* Tabs navigation */
+  ul.tabs {
+    border-bottom-color: var(--border-primary);
+  }
+
+  ul.tabs li a {
+    color: var(--text-secondary);
+    background: transparent;
+    border-color: transparent;
+  }
+
+  ul.tabs li a:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+  }
+
+  ul.tabs li a.selected {
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    border-color: var(--border-primary);
+    border-bottom-color: var(--bg-primary);
+  }
+}
+
+body.theme-ws-dark .admin-menu ul li a {
+  color: var(--text-secondary);
+  border-bottom-color: var(--border-secondary);
+}
+
+body.theme-ws-dark .admin-menu ul li a:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark .admin-menu ul li a.selected {
+  background: var(--bg-accent-subtle);
+  color: var(--bg-accent);
+}
+
+body.theme-ws-dark #tab-content-general,
+body.theme-ws-dark #tab-content-display,
+body.theme-ws-dark #tab-content-authentication,
+body.theme-ws-dark #tab-content-projects,
+body.theme-ws-dark #tab-content-users,
+body.theme-ws-dark #tab-content-issues,
+body.theme-ws-dark #tab-content-notifications,
+body.theme-ws-dark #tab-content-mail_handler,
+body.theme-ws-dark #tab-content-repositories,
+body.theme-ws-dark .tab-content {
+  background: var(--bg-primary);
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark ul.tabs {
+  border-bottom-color: var(--border-primary);
+}
+
+body.theme-ws-dark ul.tabs li a {
+  color: var(--text-secondary);
+  background: transparent;
+  border-color: transparent;
+}
+
+body.theme-ws-dark ul.tabs li a:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+body.theme-ws-dark ul.tabs li a.selected {
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border-color: var(--border-primary);
+  border-bottom-color: var(--bg-primary);
+}
+
+
+/* ==========================================================================
+   SECTION 4: CONTEXT MENUS
+   Right-click context menu styling — clean, rounded, polished.
+   ========================================================================== */
+
+#context-menu {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 4px;
+  min-width: 180px;
+  z-index: 1000;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  overflow: hidden;
+}
+
+#context-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#context-menu li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+#context-menu a {
+  display: block;
+  padding: 6px 12px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: var(--font-weight-normal);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  line-height: var(--line-height-normal);
+  transition: background-color 0.1s ease;
+  white-space: nowrap;
+}
+
+#context-menu a:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+#context-menu a:active {
+  background: var(--bg-accent-subtle);
+}
+
+#context-menu .icon {
+  padding-left: 28px;
+  background-repeat: no-repeat;
+  background-position: 8px center;
+  background-size: 14px 14px;
+}
+
+/* Folder items (submenus) */
+#context-menu .folder > a {
+  font-weight: var(--font-weight-medium);
+}
+
+#context-menu .folder > a::after {
+  content: "";
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 4px solid var(--text-tertiary);
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* Nested submenus */
+#context-menu ul ul {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 4px;
+  min-width: 160px;
+  z-index: 1001;
+}
+
+/* Separator */
+#context-menu li.separator,
+#context-menu li hr {
+  border: none;
+  border-top: 1px solid var(--border-secondary);
+  margin: 4px 0;
+  padding: 0;
+  height: 0;
+}
+
+/* Disabled items */
+#context-menu a.disabled,
+#context-menu li.disabled a {
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+
+/* ==========================================================================
+   SECTION 5: MODAL / DIALOG
+   Redmine uses jQuery UI dialogs and #ajax-modal.
+   ========================================================================== */
+
+/* Overlay backdrop */
+.ui-widget-overlay {
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+/* Dialog container */
+div.ui-dialog {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  padding: 0;
+  overflow: hidden;
+  font-family: var(--font-family);
+  z-index: 1000;
+}
+
+/* Dialog title bar */
+.ui-dialog .ui-dialog-titlebar {
+  background: var(--bg-secondary);
+  padding: 12px 20px;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* Remove jQuery UI default gradients */
+  background-image: none;
+}
+
+.ui-dialog .ui-dialog-titlebar .ui-dialog-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  letter-spacing: var(--letter-spacing);
+}
+
+/* Dialog close button */
+.ui-dialog .ui-dialog-titlebar-close {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+  position: relative;
+  right: 0;
+  top: 0;
+  margin: 0;
+  width: auto;
+  height: auto;
+}
+
+.ui-dialog .ui-dialog-titlebar-close:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.ui-dialog .ui-dialog-titlebar-close .ui-icon {
+  /* Override jQuery UI icon with simple X appearance */
+  background-image: none;
+  text-indent: 0;
+  color: inherit;
+}
+
+/* Dialog content area */
+.ui-dialog .ui-dialog-content,
+#ajax-modal {
+  padding: 20px;
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  line-height: var(--line-height-normal);
+  background: var(--bg-primary);
+  overflow-y: auto;
+}
+
+/* Dialog button pane */
+.ui-dialog .ui-dialog-buttonpane {
+  padding: 12px 20px;
+  border-top: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+}
+
+.ui-dialog .ui-dialog-buttonpane button {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  padding: 6px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-primary);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ui-dialog .ui-dialog-buttonpane button:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-primary);
+}
+
+.ui-dialog .ui-dialog-buttonpane button:first-child {
+  background: var(--bg-accent);
+  color: var(--text-on-accent);
+  border-color: transparent;
+}
+
+.ui-dialog .ui-dialog-buttonpane button:first-child:hover {
+  background: var(--bg-accent-hover);
+}
+
+/* Override jQuery UI default widget styles */
+.ui-widget {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+}
+
+.ui-widget-content {
+  border-color: var(--border-primary);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.ui-widget-header {
+  border-color: var(--border-primary);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  background-image: none;
+}
+
+/* Confirmation dialogs */
+.confirm-dialog {
+  text-align: center;
+  padding: var(--space-5);
+}
+
+.confirm-dialog p {
+  margin-bottom: var(--space-4);
+  color: var(--text-primary);
+  font-size: var(--font-size-md);
+}
+
+
+/* ==========================================================================
+   SECTION 6: DROPDOWN MENUS
+   Redmine uses .drdn for dropdown menus (Redmine 5.x+).
+   ========================================================================== */
+
+.drdn {
+  position: relative;
+  display: inline-block;
+}
+
+.drdn-trigger {
+  cursor: pointer;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.drdn-trigger::after {
+  content: "";
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid var(--text-tertiary);
+  margin-left: 2px;
+  vertical-align: middle;
+}
+
+.drdn-content {
+  display: none;
+  position: absolute;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 4px;
+  min-width: 200px;
+  z-index: 100;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+}
+
+.drdn-content.visible,
+.drdn.open .drdn-content {
+  display: block;
+}
+
+/* Right-aligned dropdown variant */
+.drdn-content.right {
+  left: auto;
+  right: 0;
+}
+
+.drdn-content a {
+  display: block;
+  padding: 6px 12px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: var(--font-weight-normal);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: background-color 0.1s ease;
+  white-space: nowrap;
+}
+
+.drdn-content a:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.drdn-content a:active {
+  background: var(--bg-accent-subtle);
+}
+
+/* Dropdown group headings */
+.drdn-content .group,
+.drdn-content label {
+  padding: 4px 12px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: var(--font-weight-semibold);
+  margin-top: 4px;
+  cursor: default;
+  display: block;
+}
+
+.drdn-content .group:first-child,
+.drdn-content label:first-child {
+  margin-top: 0;
+}
+
+/* Dropdown separator */
+.drdn-content hr,
+.drdn-content .separator {
+  border: none;
+  border-top: 1px solid var(--border-secondary);
+  margin: 4px 0;
+  padding: 0;
+  height: 0;
+}
+
+/* Dropdown items list */
+.drdn-content ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.drdn-content ul li {
+  margin: 0;
+  padding: 0;
+}
+
+/* Selected item in dropdown */
+.drdn-content a.selected,
+.drdn-content a.current {
+  color: var(--bg-accent);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Dropdown with items count */
+.drdn-content span.count {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  margin-left: 4px;
+}
+
+
+/* ==========================================================================
+   SECTION 7: AUTOCOMPLETE
+   jQuery UI autocomplete and Redmine's custom autocomplete styling.
+   ========================================================================== */
+
+.ui-autocomplete,
+.autocomplete,
+ul.ui-autocomplete {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 4px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1100;
+  font-family: var(--font-family);
+  list-style: none;
+  margin: 0;
+}
+
+.ui-autocomplete li,
+.autocomplete li,
+ul.ui-autocomplete li {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.ui-autocomplete li a,
+.ui-autocomplete li .ui-menu-item-wrapper,
+.autocomplete li {
+  display: block;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: background-color 0.1s ease;
+  line-height: var(--line-height-normal);
+}
+
+.ui-autocomplete li a:hover,
+.ui-autocomplete li .ui-menu-item-wrapper:hover,
+.ui-autocomplete li.ui-state-focus a,
+.ui-autocomplete li.ui-state-focus .ui-menu-item-wrapper,
+.ui-autocomplete .ui-menu-item.ui-state-focus .ui-menu-item-wrapper,
+.autocomplete li:hover,
+.autocomplete li.selected {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.ui-autocomplete li.ui-state-active a,
+.ui-autocomplete li.ui-state-active .ui-menu-item-wrapper,
+.ui-autocomplete .ui-menu-item.ui-state-active .ui-menu-item-wrapper {
+  background: var(--bg-accent);
+  color: var(--text-on-accent);
+}
+
+/* Autocomplete category / group headers */
+.ui-autocomplete .ui-autocomplete-category {
+  padding: 4px 12px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: var(--font-weight-semibold);
+  cursor: default;
+}
+
+/* Override jQuery UI default autocomplete styling */
+.ui-menu .ui-menu-item {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.ui-state-hover,
+.ui-widget-content .ui-state-hover,
+.ui-state-focus,
+.ui-widget-content .ui-state-focus {
+  border: none;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-weight: normal;
+}
+
+.ui-state-active,
+.ui-widget-content .ui-state-active {
+  border: none;
+  background: var(--bg-accent);
+  color: var(--text-on-accent);
+}
+
+/* Loading state for autocomplete */
+.ui-autocomplete-loading {
+  background-image: none;
+  opacity: 0.7;
+}
+
+/* No results message */
+.ui-autocomplete .no-results {
+  padding: 8px 12px;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+  cursor: default;
+}
+
+
+/* ==========================================================================
+   SECTION 8: RESPONSIVE DESIGN
+   Breakpoints to ensure Redmine works on tablets and mobile.
+   ========================================================================== */
+
+/* ---------- 8a. Large Tablet / Small Desktop — max-width: 1200px ---------- */
+
+@media (max-width: 1200px) {
+  #main {
+    max-width: 100%;
+    padding: var(--space-4) var(--space-4) var(--space-6);
+  }
+
+  #sidebar {
+    width: 220px;
+    min-width: 220px;
+    max-width: 220px;
+    padding: var(--space-4);
+  }
+
+  #content {
+    padding: 0 var(--space-4) 0 0;
+  }
+
+  /* Horizontal scroll for wide tables */
+  .autoscroll,
+  table.issues,
+  table.list {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Gantt overflow */
+  .gantt_area {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+
+/* ---------- 8b. Tablet — max-width: 900px ---------- */
+
+@media (max-width: 900px) {
+  /* Stack sidebar below content */
+  #main {
+    flex-direction: column;
+    padding: var(--space-3) var(--space-3) var(--space-5);
+  }
+
+  body #main {
+    flex-direction: column;
+  }
+
+  #sidebar {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--border-primary);
+    order: 2;
+    padding: var(--space-4);
+    margin-top: var(--space-4);
+  }
+
+  #content {
+    order: 1;
+    padding: 0;
+    width: 100%;
+  }
+
+  div#content {
+    padding: 0;
+  }
+
+  /* Header adjustments */
+  #header {
+    padding: 0 var(--space-4);
+    min-height: 48px;
+    flex-wrap: wrap;
+  }
+
+  #header h1 {
+    font-size: 14px;
+    line-height: 48px;
+  }
+
+  /* Quick search */
+  #header #quick-search #q {
+    width: 160px;
+  }
+
+  #header #quick-search #q:focus {
+    width: 200px;
+  }
+
+  /* Top menu */
+  #top-menu {
+    padding: var(--space-1) var(--space-4);
+    height: auto;
+    min-height: 32px;
+    flex-wrap: wrap;
+  }
+
+  /* Main menu scrollable */
+  #main-menu ul {
+    padding: 0 var(--space-4);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  #main-menu ul::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Truncate long issue subjects */
+  table.issues td.subject {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Issue detail layout */
+  .issue .attributes {
+    display: block;
+  }
+
+  .issue .attributes .attribute {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-1) 0;
+  }
+
+  /* Split content stacks vertically */
+  .splitcontentleft,
+  .splitcontentright {
+    width: 100%;
+    padding: 0;
+    float: none;
+  }
+
+  /* Tabular forms go full width */
+  .tabular label {
+    display: block;
+    text-align: left;
+    margin-bottom: var(--space-1);
+  }
+
+  .tabular input,
+  .tabular select,
+  .tabular textarea {
+    width: 100%;
+  }
+
+  /* Project menu scrollable */
+  #project-menu ul {
+    padding: 0 var(--space-4);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  #project-menu ul::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+
+/* ---------- 8c. Mobile — max-width: 600px ---------- */
+
+@media (max-width: 600px) {
+  /* Main menu wraps */
+  #main-menu ul {
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 0 var(--space-3);
+  }
+
+  #main-menu ul li a {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-sm);
+  }
+
+  /* Login form — mobile centered */
+  #login-form {
+    margin: var(--space-5) auto;
+    padding: var(--space-6);
+    max-width: 100%;
+    border-radius: var(--radius-lg);
+  }
+
+  /* Content padding */
+  #content {
+    padding: 0;
+  }
+
+  #main {
+    padding: var(--space-2) var(--space-2) var(--space-4);
+  }
+
+  /* Header */
+  #header {
+    padding: 0 var(--space-3);
+    min-height: 44px;
+  }
+
+  #header h1 {
+    font-size: 14px;
+    line-height: 44px;
+    max-width: 60%;
+  }
+
+  #header #quick-search {
+    display: none;
+  }
+
+  /* Top menu compact */
+  #top-menu {
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--font-size-xs);
+  }
+
+  /* Hide less important table columns on mobile */
+  table.issues td.created_on,
+  table.issues th.created_on,
+  table.issues td.updated_on,
+  table.issues th.updated_on,
+  table.issues td.due_date,
+  table.issues th.due_date,
+  table.issues td.estimated_hours,
+  table.issues th.estimated_hours,
+  table.issues td.done_ratio,
+  table.issues th.done_ratio,
+  table.issues td.category,
+  table.issues th.category,
+  table.issues td.fixed_version,
+  table.issues th.fixed_version {
+    display: none;
+  }
+
+  /* Table rows */
+  table.list td,
+  table.issues td {
+    padding: var(--space-2) var(--space-2);
+    font-size: var(--font-size-sm);
+  }
+
+  table.list th,
+  table.issues th {
+    padding: var(--space-2) var(--space-2);
+    font-size: var(--font-size-xs);
+  }
+
+  /* Truncate issue subject further on mobile */
+  table.issues td.subject {
+    max-width: 150px;
+  }
+
+  /* Tabular forms full width */
+  .tabular label {
+    display: block;
+    text-align: left;
+    min-width: auto;
+    max-width: none;
+    width: 100%;
+    margin-bottom: 2px;
+  }
+
+  /* Buttons full width on mobile */
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .buttons input[type="submit"],
+  .buttons a.button {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Sidebar adjustments */
+  #sidebar {
+    padding: var(--space-3);
+  }
+
+  /* Context menu adjustments */
+  #context-menu {
+    min-width: 160px;
+    max-width: 90vw;
+  }
+
+  /* Modal adjustments */
+  div.ui-dialog {
+    width: calc(100vw - 20px);
+    max-width: 100%;
+    margin: 10px;
+    position: fixed;
+    left: 0;
+    right: 0;
+  }
+
+  /* Contextual links wrap */
+  #content .contextual {
+    float: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+
+  /* Content headings */
+  #content h2 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-3);
+  }
+
+  /* Pagination compact */
+  p.pagination {
+    font-size: var(--font-size-xs);
+    text-align: center;
+  }
+
+  /* Footer compact */
+  #footer {
+    padding: var(--space-3) var(--space-3);
+    font-size: 10px;
+  }
+
+  /* Gantt chart scrollable */
+  .gantt_area {
+    overflow-x: auto;
+  }
+
+  /* Calendar scrollable */
+  table.cal {
+    font-size: var(--font-size-xs);
+  }
+
+  /* Wiki content spacing */
+  div.wiki {
+    font-size: var(--font-size-sm);
+  }
+
+  div.wiki pre {
+    font-size: var(--font-size-xs);
+    padding: var(--space-3);
+    overflow-x: auto;
+  }
+
+  /* Dropdown menus */
+  .drdn-content {
+    min-width: 160px;
+    max-width: 90vw;
+  }
+
+  /* Account nav */
+  #account-nav {
+    font-size: var(--font-size-xs);
+  }
+}
+
+
+/* ---------- 8d. Very Small Mobile — max-width: 400px ---------- */
+
+@media (max-width: 400px) {
+  #main-menu ul li a {
+    padding: var(--space-1) var(--space-2);
+    font-size: 11px;
+  }
+
+  #top-menu ul {
+    gap: 0;
+  }
+
+  #top-menu a {
+    padding: 2px 4px;
+    font-size: 11px;
+  }
+
+  /* Hide some account nav items */
+  #account-nav li:not(:last-child):not(:first-child) {
+    display: none;
+  }
+
+  /* Further reduce table columns */
+  table.issues td.tracker,
+  table.issues th.tracker {
+    display: none;
+  }
+
+  /* Issue subject max width */
+  table.issues td.subject {
+    max-width: 120px;
+  }
+
+  /* Login form tight */
+  #login-form {
+    padding: var(--space-4);
+    margin: var(--space-3) var(--space-2);
+  }
+}
+
+
+/* ==========================================================================
+   SECTION 9: PRINT STYLES
+   Clean print output — hide navigation, remove decorations.
+   ========================================================================== */
+
+@media print {
+  /* Hide non-essential elements */
+  #header,
+  #top-menu,
+  #main-menu,
+  #project-menu,
+  #sidebar,
+  #footer,
+  .contextual,
+  .buttons,
+  .other-formats,
+  .pagination,
+  #flash_notice,
+  #flash_error,
+  #flash_warning,
+  .toggle-sidebar,
+  #context-menu,
+  .drdn,
+  .ui-dialog,
+  .ui-widget-overlay {
+    display: none;
+  }
+
+  /* Reset background and colors */
+  body {
+    background: white;
+    color: black;
+    font-size: 12pt;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Content takes full width */
+  #wrapper {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  #main {
+    display: block;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  #content {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Remove shadows and rounded corners */
+  * {
+    box-shadow: none;
+    text-shadow: none;
+    border-radius: 0;
+  }
+
+  /* Clean table printing */
+  table {
+    border-collapse: collapse;
+  }
+
+  table th,
+  table td {
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+  }
+
+  /* Links: show URL in print */
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 10pt;
+    color: #666;
+    font-weight: normal;
+  }
+
+  /* But not for internal/hash links or buttons */
+  a[href^="#"]::after,
+  a[href^="javascript"]::after,
+  a.button::after,
+  .contextual a::after,
+  #content a[href^="/"]::after {
+    content: "";
+  }
+
+  /* Headings */
+  h1, h2, h3, h4 {
+    color: black;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Avoid breaking inside these elements */
+  table, figure, pre, blockquote {
+    page-break-inside: avoid;
+  }
+
+  /* Images */
+  img {
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+
+  /* Code blocks */
+  pre, code {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    font-size: 10pt;
+  }
+
+  /* Issue detail clean print */
+  .issue .attributes {
+    border: 1px solid #ccc;
+    padding: 8px;
+  }
+
+  /* Wiki content */
+  div.wiki {
+    font-size: 12pt;
+  }
+}
+
+
+/* ==========================================================================
+   SECTION 10: TRANSITION & ANIMATION REFINEMENTS
+   Smooth theme switches, loading states, and micro-interactions.
+   ========================================================================== */
+
+/* Smooth background/color transition during theme switching */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Theme transition class — applied via JS during theme switch */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition: background-color 0.3s ease,
+              color 0.3s ease,
+              border-color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+/* Subtle fade-in for flash messages */
+@keyframes flash-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#flash_notice,
+#flash_error,
+#flash_warning {
+  animation: flash-slide-in 0.3s ease-out;
+}
+
+/* Skeleton loading placeholder — for AJAX content loading */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton,
+.loading-placeholder {
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 25%,
+    var(--bg-secondary) 50%,
+    var(--bg-tertiary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+  min-height: 16px;
+}
+
+/* Smooth modal open/close */
+@keyframes modal-fade-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+div.ui-dialog {
+  animation: modal-fade-in 0.2s ease-out;
+}
+
+/* Overlay fade */
+@keyframes overlay-fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.ui-widget-overlay {
+  animation: overlay-fade-in 0.2s ease-out;
+}
+
+/* Context menu entrance */
+@keyframes context-menu-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+#context-menu {
+  animation: context-menu-in 0.15s ease-out;
+}
+
+/* Dropdown entrance */
+@keyframes dropdown-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.drdn-content.visible,
+.drdn.open .drdn-content {
+  animation: dropdown-in 0.15s ease-out;
+}
+
+/* Subtle hover lift for cards / boxes */
+.mypage-box {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.mypage-box:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+/* Button press feedback */
+input[type="submit"]:active,
+a.button:active,
+button:active {
+  transform: scale(0.98);
+  transition: transform 0.05s ease;
+}
+
+/* Focus ring transition */
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+/* Smooth expand/collapse for collapsible sections */
+.collapsed .wiki,
+.collapsed .details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.expanded .wiki,
+.expanded .details {
+  max-height: 2000px;
+  transition: max-height 0.5s ease;
+}
+
+
+/* ==========================================================================
+   SECTION 11: ACCESSIBILITY
+   Focus indicators, screen reader utilities, and contrast compliance.
+   ========================================================================== */
+
+/* Enhanced focus-visible for all interactive elements */
+:focus-visible {
+  outline: 2px solid var(--bg-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Remove default outline for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Screen reader only — visually hidden but accessible */
+.sr-only,
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip to content link */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: var(--space-4);
+  background: var(--bg-accent);
+  color: var(--text-on-accent);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-medium);
+  z-index: 10000;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+
+.skip-to-content:focus {
+  top: var(--space-2);
+}
+
+/* Ensure minimum touch target size on mobile */
+@media (max-width: 900px) {
+  a,
+  button,
+  input[type="submit"],
+  input[type="button"],
+  input[type="checkbox"],
+  input[type="radio"],
+  select {
+    min-height: 36px;
+    min-width: 36px;
+  }
+
+  /* But not for inline text links */
+  p a,
+  li a,
+  td a,
+  span a,
+  .wiki a {
+    min-height: auto;
+    min-width: auto;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+    scroll-behavior: auto;
+  }
+
+  .theme-transition,
+  .theme-transition *,
+  .theme-transition *::before,
+  .theme-transition *::after {
+    transition-duration: 0.01ms;
+  }
+}
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+  :root {
+    --bg-accent: LinkText;
+    --border-focus: Highlight;
+  }
+
+  input[type="submit"],
+  a.button,
+  button {
+    border: 1px solid ButtonText;
+  }
+
+  a {
+    color: LinkText;
+  }
+
+  a:visited {
+    color: VisitedText;
+  }
+}
+
+/* Ensure good contrast for status indicators */
+.issue .status {
+  font-weight: var(--font-weight-medium);
+}
+
+/* ARIA current page indicator */
+[aria-current="page"] {
+  font-weight: var(--font-weight-semibold);
+  color: var(--bg-accent);
+}
+
+
+/* ==========================================================================
+   SECTION 12: SCROLLBAR STYLING
+   Custom scrollbars for Webkit/Blink browsers, and Firefox.
+   ========================================================================== */
+
+/* Webkit / Blink scrollbars (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-primary);
+  border-radius: 4px;
+  border: 2px solid var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--bg-secondary);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-primary) var(--bg-secondary);
+}
+
+/* Sidebar-specific scrollbar (thinner) */
+#sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+  border: 1px solid var(--bg-secondary);
+}
+
+/* Autocomplete dropdown scrollbar */
+.ui-autocomplete::-webkit-scrollbar,
+.autocomplete::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ui-autocomplete::-webkit-scrollbar-thumb,
+.autocomplete::-webkit-scrollbar-thumb {
+  background: var(--border-primary);
+  border-radius: 3px;
+}
+
+/* Table scroll container */
+.autoscroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.autoscroll::-webkit-scrollbar-thumb {
+  background: var(--border-primary);
+  border-radius: 3px;
+}
+
+.autoscroll::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+
+/* ==========================================================================
+   SECTION 13: DARK MODE — SCROLLBAR OVERRIDES
+   Ensure scrollbars adapt properly in dark mode.
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #3A3A3E;
+    border-color: var(--bg-secondary);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #4A4A4E;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: var(--bg-secondary);
+  }
+
+  * {
+    scrollbar-color: #3A3A3E var(--bg-secondary);
+  }
+}
+
+body.theme-ws-dark ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+body.theme-ws-dark ::-webkit-scrollbar-thumb {
+  background: #3A3A3E;
+  border-color: var(--bg-secondary);
+}
+
+body.theme-ws-dark ::-webkit-scrollbar-thumb:hover {
+  background: #4A4A4E;
+}
+
+body.theme-ws-dark ::-webkit-scrollbar-corner {
+  background: var(--bg-secondary);
+}
+
+
+/* ==========================================================================
+   SECTION 14: DARK MODE — MISCELLANEOUS CATCH-ALL
+   Final overrides to ensure no light-mode colors leak through.
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  /* Ensure body and wrapper are dark */
+  body,
+  #wrapper {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  /* Header */
+  #header {
+    background: var(--bg-primary);
+    border-bottom-color: var(--border-primary);
+  }
+
+  #header h1,
+  #header h1 a {
+    color: var(--text-primary);
+  }
+
+  /* Top menu */
+  #top-menu {
+    background: var(--bg-secondary);
+    border-bottom-color: var(--border-secondary);
+    color: var(--text-secondary);
+  }
+
+  /* Main menu */
+  #main-menu {
+    border-bottom-color: var(--border-primary);
+  }
+
+  #main-menu ul li a {
+    color: var(--text-secondary);
+  }
+
+  #main-menu ul li a:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+  }
+
+  #main-menu ul li a.selected,
+  #main-menu ul li a.current {
+    color: var(--text-primary);
+    border-bottom-color: var(--bg-accent);
+  }
+
+  /* Sidebar */
+  #sidebar {
+    background: var(--bg-secondary);
+    border-left-color: var(--border-primary);
+  }
+
+  #sidebar h3 {
+    color: var(--text-tertiary);
+  }
+
+  #sidebar a {
+    color: var(--text-secondary);
+  }
+
+  #sidebar a:hover {
+    color: var(--text-primary);
+  }
+
+  /* Footer */
+  #footer {
+    border-top-color: var(--border-primary);
+    color: var(--text-tertiary);
+  }
+
+  #footer a {
+    color: var(--text-tertiary);
+  }
+
+  /* Project menu */
+  #project-menu {
+    border-bottom-color: var(--border-secondary);
+  }
+
+  /* Content headings */
+  #content h2,
+  #content h3,
+  #content h4 {
+    color: var(--text-primary);
+  }
+
+  /* Breadcrumbs */
+  #content p.breadcrumb {
+    color: var(--text-secondary);
+  }
+
+  /* Quick search */
+  #header #quick-search #q {
+    background: var(--bg-tertiary);
+    border-color: var(--border-primary);
+    color: var(--text-primary);
+  }
+
+  #header #quick-search #q:focus {
+    background: var(--bg-primary);
+    border-color: var(--border-focus);
+  }
+
+  /* Horizontal rules */
+  hr {
+    border-color: var(--border-primary);
+  }
+
+  /* Definition lists */
+  dt {
+    color: var(--text-secondary);
+  }
+
+  dd {
+    color: var(--text-primary);
+  }
+
+  /* Diff views */
+  .diff_out {
+    background: #3B0D0D;
+    color: #FCA5A5;
+  }
+
+  .diff_in {
+    background: #0D3320;
+    color: #86EFAC;
+  }
+
+  /* File content / repository */
+  table.filecontent {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  table.filecontent th {
+    background: var(--bg-secondary);
+    color: var(--text-tertiary);
+    border-color: var(--border-primary);
+  }
+
+  /* Progress bars */
+  .progress {
+    background: var(--bg-tertiary);
+    border-color: var(--border-primary);
+  }
+
+  .progress .closed {
+    background: var(--status-green);
+  }
+
+  .progress .done {
+    background: var(--bg-accent);
+  }
+
+  /* Thumbnails / attachments */
+  .thumbnails img {
+    border-color: var(--border-primary);
+    background: var(--bg-secondary);
+  }
+
+  .thumbnails a:hover img {
+    border-color: var(--bg-accent);
+  }
+
+  /* File list */
+  .attachments .file {
+    color: var(--text-primary);
+  }
+
+  .attachments .size {
+    color: var(--text-tertiary);
+  }
+
+  /* News items */
+  .news h3 a {
+    color: var(--text-primary);
+  }
+
+  .news .author {
+    color: var(--text-secondary);
+  }
+
+  /* Activity feed */
+  #activity dt {
+    color: var(--text-secondary);
+  }
+
+  #activity dd {
+    color: var(--text-primary);
+  }
+
+  #activity dd .description {
+    color: var(--text-secondary);
+  }
+
+  /* Forum/messages */
+  table.messages td {
+    border-color: var(--border-secondary);
+  }
+
+  .message .author {
+    color: var(--text-secondary);
+  }
+
+  /* Version overview */
+  .version-overview h3 a {
+    color: var(--text-primary);
+  }
+
+  .version-overview .description {
+    color: var(--text-secondary);
+  }
+
+  /* Roadmap */
+  .roadmap h3 a {
+    color: var(--text-primary);
+  }
+
+  /* Projects list */
+  ul.projects li a.project {
+    color: var(--text-primary);
+  }
+
+  ul.projects li .description {
+    color: var(--text-secondary);
+  }
+
+  /* Plugin compatibility — general overrides */
+  .controller-agile-boards .issue-card,
+  .agile-board .issue-card {
+    background: var(--bg-secondary);
+    border-color: var(--border-primary);
+    color: var(--text-primary);
+  }
+
+  .controller-agile-boards .issue-card:hover,
+  .agile-board .issue-card:hover {
+    background: var(--bg-tertiary);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+/* Duplicate catch-all for body.theme-ws-dark */
+body.theme-ws-dark,
+body.theme-ws-dark #wrapper {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark #header {
+  background: var(--bg-primary);
+  border-bottom-color: var(--border-primary);
+}
+
+body.theme-ws-dark #header h1,
+body.theme-ws-dark #header h1 a {
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark #top-menu {
+  background: var(--bg-secondary);
+  border-bottom-color: var(--border-secondary);
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark #main-menu {
+  border-bottom-color: var(--border-primary);
+}
+
+body.theme-ws-dark #main-menu ul li a {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark #main-menu ul li a:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+body.theme-ws-dark #main-menu ul li a.selected,
+body.theme-ws-dark #main-menu ul li a.current {
+  color: var(--text-primary);
+  border-bottom-color: var(--bg-accent);
+}
+
+body.theme-ws-dark #sidebar {
+  background: var(--bg-secondary);
+  border-left-color: var(--border-primary);
+}
+
+body.theme-ws-dark #sidebar h3 {
+  color: var(--text-tertiary);
+}
+
+body.theme-ws-dark #sidebar a {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark #sidebar a:hover {
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark #footer {
+  border-top-color: var(--border-primary);
+  color: var(--text-tertiary);
+}
+
+body.theme-ws-dark #footer a {
+  color: var(--text-tertiary);
+}
+
+body.theme-ws-dark #project-menu {
+  border-bottom-color: var(--border-secondary);
+}
+
+body.theme-ws-dark #content h2,
+body.theme-ws-dark #content h3,
+body.theme-ws-dark #content h4 {
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark #content p.breadcrumb {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark #header #quick-search #q {
+  background: var(--bg-tertiary);
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark #header #quick-search #q:focus {
+  background: var(--bg-primary);
+  border-color: var(--border-focus);
+}
+
+body.theme-ws-dark hr {
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark dt {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark dd {
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark .diff_out {
+  background: #3B0D0D;
+  color: #FCA5A5;
+}
+
+body.theme-ws-dark .diff_in {
+  background: #0D3320;
+  color: #86EFAC;
+}
+
+body.theme-ws-dark table.filecontent {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark table.filecontent th {
+  background: var(--bg-secondary);
+  color: var(--text-tertiary);
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark .progress {
+  background: var(--bg-tertiary);
+  border-color: var(--border-primary);
+}
+
+body.theme-ws-dark .progress .closed {
+  background: var(--status-green);
+}
+
+body.theme-ws-dark .progress .done {
+  background: var(--bg-accent);
+}
+
+body.theme-ws-dark .thumbnails img {
+  border-color: var(--border-primary);
+  background: var(--bg-secondary);
+}
+
+body.theme-ws-dark .thumbnails a:hover img {
+  border-color: var(--bg-accent);
+}
+
+body.theme-ws-dark .attachments .file {
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark .attachments .size {
+  color: var(--text-tertiary);
+}
+
+body.theme-ws-dark .news h3 a {
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark .news .author {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark #activity dt {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark #activity dd {
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark #activity dd .description {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark table.messages td {
+  border-color: var(--border-secondary);
+}
+
+body.theme-ws-dark .message .author {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark .version-overview h3 a {
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark .version-overview .description {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark .roadmap h3 a {
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark ul.projects li a.project {
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark ul.projects li .description {
+  color: var(--text-secondary);
+}
+
+body.theme-ws-dark .controller-agile-boards .issue-card,
+body.theme-ws-dark .agile-board .issue-card {
+  background: var(--bg-secondary);
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+body.theme-ws-dark .controller-agile-boards .issue-card:hover,
+body.theme-ws-dark .agile-board .issue-card:hover {
+  background: var(--bg-tertiary);
+  box-shadow: var(--shadow-sm);
+}
