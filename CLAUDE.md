@@ -1,5 +1,19 @@
 # CLAUDE.md — ws-redmine-theme
 
+## CRITICAL DISCOVERY (2026-02-12)
+Redmine themes DO NOT replace the default CSS. They OVERRIDE it!
+Built-in themes (alternate, classic) use `@import url(/application.css);` at the top
+to include Redmine's 2587-line default CSS, then add only ~60-95 lines of overrides.
+
+Our previous approach (writing a complete 7500+ line CSS) was WRONG and broke everything.
+
+**CORRECT APPROACH:**
+1. Start with `@import url(/application.css);` to include Redmine's defaults
+2. Add ONLY visual overrides (colors, fonts, shadows, border-radius)
+3. Keep it small — 200-400 lines max
+4. NEVER redefine layout, structure, or element sizing
+5. Reference: `docs/redmine-default.css` is the full Redmine 6.1 default CSS (2587 lines)
+
 ## Project
 Modern Linear.app-inspired theme for Redmine with light and dark mode.
 Open source, MIT license. https://github.com/wsagency/ws-redmine-theme
