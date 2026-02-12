@@ -2522,41 +2522,141 @@ table.issues td.done_ratio table.progress {
    ============================================================================ */
 
 /* --- Query filters (issue list filter bar) --- */
-#query_form_content,
-fieldset#filters-table {
-  background: var(--bg-secondary);
+#query_form_content {
+  font-size: var(--font-size-sm);
+}
+
+/* Filters fieldset */
+fieldset#filters {
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
+  background: var(--bg-secondary);
+}
+
+fieldset#filters table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+fieldset#filters table td {
+  padding: 2px 4px;
+  vertical-align: middle;
+}
+
+fieldset#filters tr.filter {
+  height: 2.2em;
+}
+
+fieldset#filters td.field {
+  width: 230px;
+  white-space: nowrap;
+}
+
+fieldset#filters td.field label {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+fieldset#filters td.operator {
+  width: 140px;
+}
+
+fieldset#filters td.operator select {
+  max-width: 150px;
+}
+
+fieldset#filters td.values {
+  white-space: nowrap;
+}
+
+fieldset#filters td.values select {
+  min-width: 130px;
+}
+
+fieldset#filters td.values input[type="text"] {
+  max-width: 180px;
+}
+
+#filters-table {
+  width: 65%;
+  float: left;
 }
 
 #query_form_content select,
-fieldset#filters-table select {
+#filters-table select {
   font-size: var(--font-size-sm);
 }
 
 #query_form_content input[type="text"],
-fieldset#filters-table input[type="text"] {
+#filters-table input[type="text"] {
   font-size: var(--font-size-sm);
 }
 
 /* Filter add/remove controls */
-.add-filter,
+.add-filter {
+  width: 30%;
+  float: right;
+  text-align: right;
+  vertical-align: top;
+  padding-top: 4px;
+}
+
+.add-filter label {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin-right: 4px;
+}
+
+.add-filter select {
+  font-size: var(--font-size-sm);
+}
+
 a.add-filter {
   color: var(--bg-accent);
   font-size: var(--font-size-sm);
   text-decoration: none;
 }
 
-.add-filter:hover,
 a.add-filter:hover {
   text-decoration: underline;
 }
 
-/* --- Column options in query settings --- */
-#columns label,
-#available_columns label {
+/* Clear float after filters */
+fieldset#filters > div::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Ensure hidden class works for fieldset toggling */
+.hidden {
+  display: none;
+}
+
+/* --- Options fieldset (#options) --- */
+fieldset#options {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  background: var(--bg-secondary);
+}
+
+fieldset#options label {
   font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* Column options in query settings */
+.query-columns label {
+  font-size: var(--font-size-sm);
+  display: block;
+}
+
+.query-columns select {
+  min-width: 150px;
+  min-height: 120px;
 }
 
 /* --- Options (available/selected columns) --- */
@@ -4809,21 +4909,26 @@ fieldset.collapsed legend {
   color: var(--text-tertiary);
 }
 
-fieldset.collapsible legend:before {
-  content: "";
-  display: inline-block;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 4px 0 4px 6px;
-  border-color: transparent transparent transparent var(--text-tertiary);
-  margin-right: 6px;
-  transition: transform 0.15s ease;
+/* Style Redmine's native expand/collapse SVG icons in legends */
+fieldset.collapsible legend svg {
+  width: 12px;
+  height: 12px;
   vertical-align: middle;
+  margin-right: 4px;
+  color: var(--text-tertiary);
+  transition: color 0.15s ease;
 }
 
-fieldset.collapsible:not(.collapsed) legend:before {
-  transform: rotate(90deg);
+fieldset.collapsible:not(.collapsed) legend svg {
+  color: var(--text-secondary);
+}
+
+/* For Redmine versions using background-image icons on legend */
+fieldset.collapsible legend {
+  background-size: 12px;
+  background-repeat: no-repeat;
+  background-position: 0 center;
+  padding-left: 0;
 }
 
 /* --- Optgroup styling --- */
@@ -6118,6 +6223,20 @@ body.theme-ws-dark #block-container {
   fieldset legend {
     color: #EDEDEF;
   }
+  fieldset#filters,
+  fieldset#options {
+    background: #242428;
+    border-color: #2E2E32;
+  }
+  fieldset#filters td.field label {
+    color: #8A8F98;
+  }
+  fieldset.collapsible legend svg {
+    color: #5A5E66;
+  }
+  fieldset.collapsible:not(.collapsed) legend svg {
+    color: #8A8F98;
+  }
 }
 
 body.theme-ws-dark input[type="text"],
@@ -6163,6 +6282,20 @@ body.theme-ws-dark fieldset {
 }
 body.theme-ws-dark fieldset legend {
   color: #EDEDEF;
+}
+body.theme-ws-dark fieldset#filters,
+body.theme-ws-dark fieldset#options {
+  background: #242428;
+  border-color: #2E2E32;
+}
+body.theme-ws-dark fieldset#filters td.field label {
+  color: #8A8F98;
+}
+body.theme-ws-dark fieldset.collapsible legend svg {
+  color: #5A5E66;
+}
+body.theme-ws-dark fieldset.collapsible:not(.collapsed) legend svg {
+  color: #8A8F98;
 }
 
 /* ---------- Buttons (secondary treatment) ---------- */
